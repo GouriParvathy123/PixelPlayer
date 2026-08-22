@@ -1,0 +1,15 @@
+{
+  "name": "pixel-player",
+  "version": "0.1.0",
+  "description": "Offline pixel-art desktop music player (local folder based, no login, no cloud)",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron ."
+  },
+  "dependencies": {
+    "music-metadata": "^7.14.0"
+  },
+  "devDependencies": {
+    "electron": "^31.0.0"
+  }
+}
