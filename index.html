@@ -1,31 +1,74 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8" />
-  <!-- No remote scripts/styles loaded — everything ships locally with the app -->
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self' pixel-player: data:;" />
+
+  <meta
+    http-equiv="Content-Security-Policy"
+    content="default-src 'self' pixel-player: data:; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com data:;"
+  />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
   <title>Pixel Player</title>
+
   <link rel="stylesheet" href="style.css" />
 </head>
+
 <body>
-  <header>
-    <h1>🎮 PIXEL PLAYER</h1>
-    <button id="choose-folder-btn">Choose Music Folder</button>
-  </header>
+  <div class="app">
+    <aside class="sidebar">
+      <div class="logo"><h1>PixelPlay</h1></div>
+      <nav class="playlist-nav" aria-label="Playlists">
+        <button class="playlist-item active" data-playlist="playlist-1"><img src="assets/decorations/Teddy.png" alt=""><span>Playlist 1</span></button>
+        <button class="playlist-item" data-playlist="playlist-2"><img src="assets/decorations/Rosebush.png" alt=""><span>Playlist 2</span></button>
+        <button class="playlist-item" data-playlist="playlist-3"><img src="assets/decorations/Toadstool.png" alt=""><span>Playlist 3</span></button>
+        <button class="playlist-item" data-playlist="playlist-4"><img src="assets/decorations/Strawberry.png" alt=""><span>Playlist 4</span></button>
+        <button class="playlist-item" data-playlist="favourites"><img src="assets/player/favourite.png" alt=""><span>Favourites</span></button>
+        <button id="choose-folder-btn" class="playlist-item add-playlist"><img src="assets/decorations/Add.png" alt=""><span>Add Playlist</span></button>
+      </nav>
+      <div class="sidebar-record-player"><img src="assets/vinyl/recordplayer.png" alt="Pixel record player"></div>
+    </aside>
 
-  <main>
-    <ul id="track-list"></ul>
-  </main>
+    <main class="room">
+      <div class="room-background"></div>
+      <div class="room-content">
+        <section class="room-header">
+          <div class="clock"><span id="current-time">08:45</span><small>PM</small><em>Fri, Aug 15, 2026</em></div>
+          <div class="weather"><span class="weather-icon">☀</span><strong>28°C</strong><small>Mostly cloudy</small></div>
+        </section>
+        <section class="current-playlist"><h2><img src="assets/decorations/Teddy.png" alt=""> Playlist 1</h2><p><span id="playlist-count">0/0</span> playing</p></section>
+        <section class="queue-panel">
+          <div class="queue-header"><h2>Up next</h2><span>QUEUE</span></div>
+          <ul id="track-list" class="track-list">
+            <li class="empty">
+              <img src="assets/decorations/Teddy.png" alt="">
+              <strong>Your music room is waiting</strong>
+              <span>Choose a music folder to fill this playlist with songs.</span>
+              <button class="empty-action" type="button">Choose music folder</button>
+            </li>
+          </ul>
+        </section>
+      </div>
 
-  <footer id="player-bar">
-    <img id="now-playing-art" src="" alt="" />
-    <div id="now-playing-info">
-      <div id="now-playing-title">No track loaded</div>
-      <div id="now-playing-artist"></div>
-    </div>
-    <audio id="audio" controls></audio>
-  </footer>
-
+      <section class="player-panel">
+        <div class="album-art-container"><img class="album-vinyl" src="assets/vinyl/vinyl.png" alt=""><img id="now-playing-art" src="assets/background/background.png" alt="Album artwork"></div>
+        <div class="song-information"><div id="now-playing-title" class="song-title">Vathapi Ganapathim</div><div id="now-playing-artist" class="song-artist">Artist: Sooryagayatri</div></div>
+        <div class="player-controls">
+          <button id="random-btn" class="player-button" title="Random"><img src="assets/player/random.png" alt="Random"></button>
+          <button id="previous-btn" class="player-button" title="Previous"><img src="assets/player/previous.png" alt="Previous"></button>
+          <button id="play-btn" class="player-button play-button" title="Play"><img src="assets/player/play.png" alt="Play"></button>
+          <button id="next-btn" class="player-button" title="Next"><img src="assets/player/next.png" alt="Next"></button>
+          <button id="favourite-btn" class="player-button" title="Favourite"><img src="assets/player/favourite.png" alt="Favourite"></button>
+        </div>
+        <div class="progress-area"><span id="current-time-display">1:24</span><div class="progress-bar"><div id="progress" class="progress"></div></div><span id="duration-display">3:52</span></div>
+        <img class="equalizer" src="assets/player/equalizer.png" alt="">
+        <audio id="audio" preload="metadata"></audio>
+      </section>
+    </main>
+  </div>
   <script src="renderer.js"></script>
 </body>
+
 </html>
