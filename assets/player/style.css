@@ -1,0 +1,2295 @@
+@import url('https://fonts.googleapis.com/css2?family=Bitcount+Grid+Single:wght@100..900&family=VT323&display=swap');
+
+/* =========================================================
+   PIXEL PLAYER — CLEAN REFERENCE LAYOUT
+   ========================================================= */
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+html,
+body {
+    width: fit-content;
+    max-width: 100%;
+    height: 100%;
+    overflow: hidden;
+}
+
+body {
+    background: #180117;
+    color: #ffe9bb;
+    font-family: "VT323", "Courier New", monospace;
+}
+
+
+/* =========================================================
+   APP
+   ========================================================= */
+
+.app {
+    position: relative;
+
+    width: 100vw;
+    height: 100vh;
+
+    display: grid;
+
+    grid-template-columns: clamp(220px, 18vw, 250px) minmax(0, 1fr);
+
+    overflow: hidden;
+}
+
+
+/* =========================================================
+   SIDEBAR
+   ========================================================= */
+
+.sidebar {
+    position: relative;
+
+    height: 100%;
+
+    padding: 22px 14px 0;
+
+    overflow: hidden;
+
+    background:
+        linear-gradient(
+            180deg,
+            #180117 0%,
+            #25021f 55%,
+            #37052f 100%
+        );
+
+    border-right: 1px solid #e8a547;
+
+    z-index: 5;
+}
+
+
+/* =========================================================
+   LOGO
+   ========================================================= */
+
+.logo {
+    padding: 5px 4px 20px;
+
+    text-align: center;
+
+    border: none;
+
+    margin: 0;
+}
+
+.logo h1 {
+    font-family: "Bitcount Grid Single", "VT323", monospace;
+
+    font-size: clamp(20px, 2vw, 27px);
+
+    font-weight: 650;
+
+    letter-spacing: 1px;
+
+    background:
+        linear-gradient(
+            180deg,
+            #fff0b5 0%,
+            #ffcf82 45%,
+            #ed777f 100%
+        );
+
+    -webkit-background-clip: text;
+    background-clip: text;
+
+    color: transparent;
+
+    text-shadow:
+        3px 3px 0 rgba(124, 39, 83, 0.8);
+}
+
+
+/* =========================================================
+   PLAYLIST NAV
+   ========================================================= */
+
+.playlist-nav {
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 3px;
+
+    width: 100%;
+}
+
+.playlist-item {
+    position: relative;
+
+    width: 100%;
+
+    min-height: 58px;
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 11px;
+
+    padding: 7px 10px;
+
+    border: 1px solid transparent;
+
+    border-bottom: 1px solid #71305b;
+
+    border-radius: 14px;
+
+    background: transparent;
+
+    color: #ffe5c4;
+
+    font-family: inherit;
+
+    cursor: pointer;
+
+    transition:
+        background 0.18s ease,
+        transform 0.18s ease,
+        border-color 0.18s ease;
+}
+
+.playlist-item img {
+    width: 42px;
+    height: 42px;
+
+    flex: 0 0 42px;
+
+    object-fit: contain;
+
+    image-rendering: pixelated;
+}
+
+.playlist-item span {
+    min-width: 0;
+
+    font-family: "Bitcount Grid Single", "VT323", monospace;
+
+    font-size: clamp(15px, 1.25vw, 19px);
+
+    font-weight: 550;
+
+    color: #ffdf91;
+
+    white-space: nowrap;
+}
+
+.playlist-item:hover {
+    background:
+        linear-gradient(
+            90deg,
+            rgba(246, 126, 126, 0.28),
+            rgba(231, 167, 102, 0.14)
+        );
+
+    transform: translateX(2px);
+
+    border-color: rgba(240, 196, 143, 0.45);
+}
+
+.playlist-item.active {
+    background: rgba(221, 110, 115, 0.20);
+
+    border: 1px solid #f0c48f;
+
+    border-radius: 14px;
+
+    box-shadow:
+        inset 0 0 15px rgba(255, 190, 120, 0.06);
+}
+
+.add-playlist {
+    margin-top: 4px;
+
+    min-height: 60px;
+
+    color: #ffd36e;
+}
+
+.add-playlist img {
+    width: 44px;
+    height: 44px;
+}
+
+
+/* =========================================================
+   SIDEBAR RECORD PLAYER
+   ========================================================= */
+
+.sidebar-record-player {
+    position: absolute;
+
+    left: 0;
+    right: 0;
+    bottom: 4px;
+
+    display: flex;
+
+    justify-content: center;
+
+    align-items: flex-end;
+
+    pointer-events: none;
+
+    overflow: hidden;
+}
+
+.sidebar-record-player img {
+    display: block;
+
+    width: min(88%, 225px);
+
+    max-height: 235px;
+
+    height: auto;
+
+    object-fit: contain;
+
+    image-rendering: pixelated;
+}
+
+
+/*
+   Prevent decorative/oversized playlist images
+   from escaping their buttons.
+*/
+.playlist-item img {
+    max-width: 46px;
+    max-height: 46px;
+}
+
+
+/* =========================================================
+   ROOM
+   ========================================================= */
+
+.room {
+    position: relative;
+
+    min-width: 0;
+    min-height: 0;
+
+    height: 100%;
+
+    overflow: hidden;
+
+    background: #704331;
+}
+
+.room-background {
+    position: absolute;
+
+    inset: 0;
+
+    width: 100%;
+    height: 100%;
+
+    background:
+        url("assets/background/background.png")
+        center center /
+        cover
+        no-repeat;
+
+    z-index: 0;
+}
+
+.ambient-glow {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    pointer-events: none;
+    background:
+        radial-gradient(circle at 62% 22%, rgba(255,200,120,0.10), transparent 12%),
+        radial-gradient(circle at 15% 55%, rgba(255,160,90,0.08), transparent 10%);
+    animation: glow-pulse 4s ease-in-out infinite;
+}
+
+
+@keyframes glow-pulse {
+    0%, 100% { opacity: 0.7; }
+    50%      { opacity: 1; }
+}
+
+
+.dust-motes {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    pointer-events: none;
+    overflow: hidden;
+}
+
+
+.dust-motes span {
+    position: absolute;
+    width: 2px;
+    height: 2px;
+    background: rgba(255, 220, 180, 0.8);
+    border-radius: 50%;
+    animation: mote-float linear infinite;
+}
+
+
+@keyframes mote-float {
+    0%   { transform: translateY(0); opacity: 0; }
+    10%  { opacity: 1; }
+    90%  { opacity: 1; }
+    100% { transform: translateY(-140px); opacity: 0; }
+}
+
+
+.room::after {
+    content: "";
+
+    position: absolute;
+
+    inset: 0;
+
+    pointer-events: none;
+
+    background:
+        linear-gradient(
+            90deg,
+            rgba(29, 5, 22, 0.08),
+            transparent 45%,
+            rgba(34, 4, 30, 0.10)
+        );
+
+    z-index: 1;
+
+    animation: candle-glow 4s ease-in-out infinite alternate;
+}
+
+
+/* =========================================================
+   ROOM CONTENT
+   ========================================================= */
+
+.room-content {
+    position: relative;
+
+    width: 100%;
+    height: 100%;
+
+    padding: 0;
+
+    overflow: hidden;
+
+    z-index: 2;
+}
+
+
+/* =========================================================
+   HEADER
+   ========================================================= */
+
+.room-header {
+    position: absolute;
+
+    top: 12px;
+    right: 16px;
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 7px;
+
+    z-index: 20;
+}
+
+.clock,
+.weather {
+    min-height: 44px;
+
+    display: flex;
+
+    align-items: center;
+
+    padding: 6px 11px;
+
+    background: rgba(68, 7, 57, 0.35);
+
+    border: 1px solid rgba(255, 255, 255, 0.25);
+
+    border-top: 1px solid rgba(255, 255, 255, 0.45);
+
+    border-left: 1px solid rgba(255, 255, 255, 0.35);
+
+    border-radius: 17px;
+
+    backdrop-filter: blur(12px);
+
+    -webkit-backdrop-filter: blur(12px);
+
+    color: #ffe5bb;
+
+    white-space: nowrap;
+
+    box-shadow:
+        0 8px 32px rgba(0, 0, 0, 0.3),
+        inset 0 1px 1px rgba(255, 255, 255, 0.2),
+        inset 0 -1px 1px rgba(0, 0, 0, 0.2),
+        inset -1px 0 1px rgba(0, 0, 0, 0.15);
+}
+
+.clock {
+    min-width: 140px;
+
+    display: grid;
+
+    grid-template-columns: auto auto;
+
+    column-gap: 5px;
+
+    font-family: "Bitcount Grid Single", "VT323", monospace;
+
+    font-size: 14px;
+}
+
+.clock small {
+    font-size: 7px;
+
+    color: #f5c287;
+}
+
+.clock em {
+    grid-column: 1 / 3;
+
+    font-size: 11px;
+
+    font-style: normal;
+
+    text-align: center;
+}
+
+.weather {
+    min-width: 160px;
+
+    gap: 6px;
+
+    font-size: 16px;
+}
+
+.weather-icon {
+    font-size: 21px;
+
+    color: #ffd54f;
+}
+
+.weather small {
+    font-size: 10px;
+
+    white-space: nowrap;
+}
+
+
+/* =========================================================
+   CURRENT PLAYLIST
+   ========================================================= */
+
+.current-playlist {
+    position: absolute;
+
+    top: 78px;
+    right: 16px;
+
+    width: min(245px, 28vw);
+
+    min-height: 82px;
+
+    padding: 11px 15px;
+
+    background: rgba(62, 10, 58, 0.35);
+
+    border: 1px solid rgba(255, 255, 255, 0.25);
+
+    border-top: 1px solid rgba(255, 255, 255, 0.45);
+
+    border-left: 1px solid rgba(255, 255, 255, 0.35);
+
+    border-radius: 18px;
+
+    backdrop-filter: blur(12px);
+
+    -webkit-backdrop-filter: blur(12px);
+
+    z-index: 15;
+
+    text-align: center;
+
+    box-shadow:
+        0 8px 32px rgba(0, 0, 0, 0.3),
+        inset 0 1px 1px rgba(255, 255, 255, 0.2),
+        inset 0 -1px 1px rgba(0, 0, 0, 0.2),
+        inset -1px 0 1px rgba(0, 0, 0, 0.15);
+}
+
+.current-playlist h2 {
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    gap: 8px;
+
+    font-family: "Bitcount Grid Single", "VT323", monospace;
+
+    font-size: 15px;
+
+    color: #ffe0a4;
+}
+
+.current-playlist h2 img {
+    width: 27px;
+    height: 27px;
+
+    object-fit: contain;
+
+    image-rendering: pixelated;
+}
+
+.current-playlist p {
+    margin-top: 5px;
+
+    padding: 0;
+
+    font-size: 14px;
+
+    color: #efb78f;
+}
+
+
+/* =========================================================
+   QUEUE
+   ========================================================= */
+
+.queue-panel {
+    position: absolute;
+
+    top: 170px;
+    right: 16px;
+
+    width: min(245px, 28vw);
+
+    height: calc(100% - 325px);
+
+    min-height: 190px;
+
+    padding: 10px;
+
+    background: rgba(61, 14, 55, 0.35);
+
+    border: 1px solid rgba(255, 255, 255, 0.25);
+
+    border-top: 1px solid rgba(255, 255, 255, 0.45);
+
+    border-left: 1px solid rgba(255, 255, 255, 0.35);
+
+    border-radius: 18px;
+
+    backdrop-filter: blur(12px);
+
+    -webkit-backdrop-filter: blur(12px);
+
+    box-shadow:
+        0 8px 32px rgba(0, 0, 0, 0.3),
+        inset 0 1px 1px rgba(255, 255, 255, 0.2),
+        inset 0 -1px 1px rgba(0, 0, 0, 0.2),
+        inset -1px 0 1px rgba(0, 0, 0, 0.15);
+
+    overflow: hidden;
+
+    z-index: 14;
+}
+
+.queue-header {
+    min-height: 30px;
+
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: center;
+
+    padding: 0 5px 7px;
+
+    border-bottom:
+        1px solid
+        rgba(247, 204, 147, 0.5);
+}
+
+.queue-header h2 {
+    font-family: "Bitcount Grid Single", "VT323", monospace;
+
+    font-size: 13px;
+
+    color: #ffe0a4;
+}
+
+.queue-header span {
+    font-size: 12px;
+
+    color: #eebf88;
+}
+
+
+/* =========================================================
+   TRACK LIST
+   ========================================================= */
+
+.track-list {
+    list-style: none;
+
+    width: 100%;
+    height: calc(100% - 30px);
+
+    overflow-y: auto;
+
+    scrollbar-width: thin;
+
+    scrollbar-color:
+        #9e496c
+        transparent;
+
+    transition: opacity 0.28s steps(4);
+}
+
+
+.track-list.switching {
+    opacity: 0;
+}
+
+.track {
+    min-height: 55px;
+
+    display: grid;
+
+    grid-template-columns: 38px minmax(0, 1fr) auto;
+
+    align-items: center;
+
+    gap: 8px;
+
+    padding: 7px;
+
+    color: #ffe6bf;
+
+    border-bottom:
+        1px solid
+        rgba(255, 222, 166, 0.25);
+
+    cursor: pointer;
+
+    transition:
+        background 0.18s ease,
+        transform 0.18s ease;
+}
+
+.track:hover {
+    background:
+        rgba(255, 204, 138, 0.14);
+
+    transform: translateX(-2px);
+}
+
+.track > img {
+    width: 38px;
+    height: 38px;
+
+    object-fit: cover;
+
+    border:
+        1px solid
+        rgba(255, 213, 153, 0.6);
+
+    border-radius: 5px;
+
+    image-rendering: pixelated;
+}
+
+.track-details {
+    min-width: 0;
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 2px;
+}
+
+.track-details strong,
+.track-details small {
+    overflow: hidden;
+
+    text-overflow: ellipsis;
+
+    white-space: nowrap;
+}
+
+.track-details strong {
+    font-size: 12px;
+
+    font-weight: 500;
+}
+
+.track-details small {
+    font-size: 10px;
+
+    color: #efb78f;
+}
+
+.track time {
+    color: #f8d09a;
+
+    font-size: 10px;
+
+    white-space: nowrap;
+}
+
+.track.playing {
+    background:
+        rgba(221, 110, 115, 0.28);
+
+    box-shadow:
+        inset 3px 0 #f2b66e;
+
+    border:
+        1px solid
+        rgba(255, 208, 140, 0.65);
+
+    border-radius: 8px;
+}
+
+
+/* =========================================================
+   EMPTY QUEUE
+   ========================================================= */
+
+.empty {
+    height: 100%;
+
+    display: flex;
+
+    flex-direction: column;
+
+    justify-content: center;
+
+    align-items: center;
+
+    gap: 10px;
+
+    padding: 20px;
+
+    color: #f0c5aa;
+
+    font-size: 15px;
+
+    line-height: 1.15;
+
+    text-align: center;
+}
+
+.empty img {
+    width: 42px;
+    height: 42px;
+
+    object-fit: contain;
+
+    image-rendering: pixelated;
+}
+
+.empty strong {
+    color: #ffe6b7;
+
+    font-family: "Bitcount Grid Single", "VT323", monospace;
+
+    font-size: 11px;
+}
+
+.empty span {
+    max-width: 175px;
+}
+
+/* =========================================================
+   FINAL MUSIC PLAYER FIX
+   Matches the reference layout
+   ========================================================= */
+
+.player-panel {
+    position: absolute;
+
+    left: 16px;
+    right: 20px;
+    bottom: 10px;
+    height: 170px;
+    min-height: 170px;
+
+    display: grid;
+
+    /*
+        COLUMN 1 = album/vinyl
+        COLUMN 2 = song information
+        COLUMN 3 = controls
+    */
+    grid-template-columns: 170px minmax(0, 1fr) auto;
+
+    /*
+        ROW 1 = song information + controls
+        ROW 2 = progress
+    */
+    grid-template-rows: 1fr;
+
+    column-gap: 12px;
+    row-gap: 8px;
+
+    padding: 12px 12px 12px 12px;
+
+    background: rgba(65, 9, 53, 0.94);
+
+    border: 1px solid #671c4d;
+    border-radius: 20px;
+
+    backdrop-filter: blur(5px);
+
+    overflow: visible;
+
+    /*
+        Prevent the grid from expanding because
+        of the oversized album artwork.
+    */
+    min-width: 0;
+}
+
+
+/* =========================================================
+   ALBUM ART + VINYL
+   ========================================================= */
+
+.album-art-container {
+    grid-column: 1;
+    grid-row: 1;
+
+    position: relative;
+    z-index: 5;
+
+    width: 160px;
+    height: 160px;
+
+    margin: 0;
+
+    overflow: visible;
+
+    border: 2px solid #270b2c;
+    border-radius: 16px;
+
+    background: #25051f;
+}
+
+
+/* Vinyl sits BEHIND the album artwork */
+
+.album-vinyl {
+    position: absolute;
+
+    z-index: 0;
+
+    top: 4px;
+    left: 58%;
+
+    width: 108%;
+    height: 96%;
+
+    object-fit: contain;
+
+    image-rendering: pixelated;
+
+    transform: translateX(0) rotate(0deg);
+
+    transform-origin: center;
+}
+
+
+/* Album image sits ON TOP of vinyl */
+
+#now-playing-art {
+    position: relative;
+
+    z-index: 2;
+
+    display: block;
+
+    width: 100%;
+    height: 100%;
+
+    object-fit: cover;
+
+    border-radius: 13px;
+
+    image-rendering: pixelated;
+}
+
+
+/* Vinyl animation */
+
+.album-art-container.is-playing .album-vinyl {
+    animation: vinyl-spin 5s linear infinite;
+}
+
+
+/* =========================================================
+   SONG INFORMATION
+   ========================================================= */
+
+.song-information {
+    grid-column: 2;
+    grid-row: 1;
+
+    align-self: flex-start;
+
+    position: relative;
+    z-index: 4;
+
+    min-width: 0;
+    width: 100%;
+    max-width: 100%;
+    height: auto;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+
+    padding: 2px 0 0 0;
+
+    background: transparent;
+
+    border: none;
+
+    overflow: hidden;
+}
+
+
+.song-title {
+    display: block;
+
+    width: 100%;
+
+    overflow: hidden;
+
+    text-overflow: ellipsis;
+
+    white-space: nowrap;
+
+    color: #ffe5bb;
+
+    font-family: 'Bitcount Grid Single', 'VT323', monospace;
+
+    font-size: 16px;
+
+    font-weight: 700;
+}
+
+
+.song-artist {
+    margin-top: 4px;
+
+    color: #efb78f;
+
+    font-family: 'Bitcount Grid Single', 'VT323', monospace;
+
+    font-size: 13px;
+
+    white-space: nowrap;
+
+    overflow: hidden;
+
+    text-overflow: ellipsis;
+}
+
+
+/* =========================================================
+   PLAYER CONTROLS
+   IMPORTANT:
+   Force controls into the TOP-RIGHT area.
+   ========================================================= */
+
+.player-controls {
+    grid-column: 3;
+    grid-row: 1;
+
+    align-self: flex-start;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: flex-end;
+
+    gap: 6px;
+
+    height: auto;
+
+    padding-right: 0;
+
+    white-space: nowrap;
+}
+
+
+.player-button {
+    flex: 0 0 auto;
+
+    width: 34px;
+    height: 34px;
+
+    padding: 0;
+
+    border: 0;
+
+    background: transparent;
+
+    cursor: pointer;
+
+    transition:
+        transform 0.18s ease,
+        filter 0.18s ease;
+}
+
+
+.player-button img {
+    display: block;
+
+    width: 100%;
+    height: 100%;
+
+    object-fit: contain;
+
+    image-rendering: pixelated;
+}
+
+
+.player-button:hover {
+    transform: translateY(-3px) scale(1.06);
+
+    filter: brightness(1.15);
+}
+
+
+.player-button:active {
+    transform: translate(1px, 1px);
+    filter: brightness(0.85);
+}
+
+
+.playlist-item:active {
+    transform: translate(1px, 1px);
+}
+
+
+/* Main play button */
+
+.player-button.play-button,
+.play-button {
+    width: 48px;
+    height: 48px;
+
+    background: transparent;
+
+    border-radius: 50%;
+}
+
+
+/* =========================================================
+   PROGRESS BAR
+   Force it underneath song information + controls
+   ========================================================= */
+
+.progress-area {
+    grid-column: 2 / 4;
+    grid-row: 2;
+
+    align-self: center;
+
+    display: flex;
+
+    align-items: center;
+
+    width: 100%;
+    height: 30px;
+
+    gap: 9px;
+
+    padding-right: 3px;
+
+    font-family: 'Bitcount Grid Single', 'VT323', monospace;
+
+    font-size: 14px;
+
+    color: #ffe5bb;
+}
+
+.progress-area,
+.equalizer {
+    display: none;
+}
+
+
+/* Time labels */
+
+#current-time-display,
+#duration-display {
+    flex: 0 0 auto;
+
+    min-width: 38px;
+
+    color: #ffe5bb;
+
+    white-space: nowrap;
+}
+
+
+/* =========================================================
+   CUSTOM PIXEL TIME BAR
+   ========================================================= */
+
+.progress-bar {
+    position: relative;
+
+    flex: 1;
+
+    width: auto;
+
+    height: 18px;
+
+    min-width: 0;
+
+    background:
+        url('assets/player/timebar.png')
+        center
+        center
+        / 100% 100%
+        no-repeat;
+
+    cursor: pointer;
+
+    overflow: hidden;
+}
+
+
+/*
+    IMPORTANT:
+    The actual progress fill should not cover
+    the decorative pixel timebar.
+*/
+
+.progress {
+    position: absolute;
+
+    left: 0;
+    top: 0;
+
+    width: 0%;
+    height: 100%;
+
+    background: transparent;
+
+    pointer-events: none;
+}
+
+
+/* =========================================================
+   EQUALIZER
+   ========================================================= */
+
+.equalizer {
+    position: absolute;
+
+    left: 50%;
+    bottom: 7px;
+
+    transform: translateX(-50%);
+
+    width: 78px;
+    height: 21px;
+
+    display: flex;
+
+    align-items: flex-end;
+    justify-content: center;
+
+    gap: 3px;
+
+    z-index: 8;
+
+    pointer-events: none;
+}
+
+
+.equalizer span {
+    width: 4px;
+
+    background: #f2a66a;
+
+    border-radius: 2px;
+
+    animation: equalizer-bars 0.8s ease-in-out infinite alternate;
+    animation-play-state: paused;
+}
+
+
+.equalizer.playing span {
+    animation-play-state: running;
+}
+
+
+.equalizer span:nth-child(1) { height: 7px; }
+.equalizer span:nth-child(2) { height: 13px; animation-delay: .08s; }
+.equalizer span:nth-child(3) { height: 9px; animation-delay: .14s; }
+.equalizer span:nth-child(4) { height: 18px; animation-delay: .21s; }
+.equalizer span:nth-child(5) { height: 11px; animation-delay: .27s; }
+.equalizer span:nth-child(6) { height: 20px; animation-delay: .34s; }
+.equalizer span:nth-child(7) { height: 12px; animation-delay: .18s; }
+.equalizer span:nth-child(8) { height: 17px; animation-delay: .3s; }
+.equalizer span:nth-child(9) { height: 8px; animation-delay: .12s; }
+.equalizer span:nth-child(10) { height: 14px; animation-delay: .25s; }
+
+
+@keyframes equalizer-bars {
+    from {
+        transform: scaleY(.65);
+    }
+
+    to {
+        transform: scaleY(1);
+    }
+}
+
+
+/* =========================================================
+   VINYL ANIMATION
+   ========================================================= */
+
+@keyframes vinyl-spin {
+    from {
+        transform: translateX(0) rotate(0deg);
+    }
+
+    to {
+        transform: translateX(0) rotate(360deg);
+    }
+}
+
+
+/* =========================================================
+   PLAYER RESPONSIVE FIX
+   ========================================================= */
+
+@media (max-width: 900px) {
+
+    .player-panel {
+        grid-template-columns: 115px minmax(0, 1fr) auto;
+
+        height: 145px;
+        min-height: 145px;
+
+        grid-template-rows: 70px 28px;
+    }
+
+    .album-art-container {
+        width: 105px;
+        height: 125px;
+
+        margin-left: -10px;
+    }
+
+    .player-button {
+        width: 32px;
+        height: 32px;
+    }
+
+    .play-button {
+        width: 46px;
+        height: 46px;
+    }
+
+    .song-title {
+        font-size: 14px;
+    }
+
+    .song-artist {
+        font-size: 13px;
+    }
+}
+
+
+@media (max-width: 700px) {
+
+    .player-panel {
+        left: 8px;
+        right: 8px;
+
+        grid-template-columns: 90px minmax(0, 1fr) auto;
+
+        column-gap: 5px;
+    }
+
+    .album-art-container {
+        width: 90px;
+        height: 110px;
+
+        margin-left: -3px;
+    }
+
+    .player-controls {
+        gap: 2px;
+    }
+
+    .player-button {
+        width: 28px;
+        height: 28px;
+    }
+
+    .play-button {
+        width: 40px;
+        height: 40px;
+    }
+}
+/* =========================================================
+   CHOOSE FOLDER
+   ========================================================= */
+
+.choose-folder-button {
+    display: none;
+}
+
+
+/* =========================================================
+   ANIMATIONS
+   ========================================================= */
+
+@keyframes candle-glow {
+    from {
+        opacity: 0.55;
+    }
+
+    to {
+        opacity: 0.9;
+    }
+}
+
+@keyframes surface-in {
+    from {
+        opacity: 0;
+        transform: translateY(8px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
+
+@media (max-width: 900px) {
+
+    .app {
+        grid-template-columns:
+            190px
+            minmax(0, 1fr);
+    }
+
+    .sidebar {
+        padding-inline: 10px;
+    }
+
+    .playlist-item {
+        min-height: 50px;
+    }
+
+    .playlist-item img {
+        width: 35px;
+        height: 35px;
+    }
+
+    .playlist-item span {
+        font-size: 14px;
+    }
+
+    .current-playlist,
+    .queue-panel {
+        width: 210px;
+    }
+
+    .player-panel {
+        grid-template-columns:
+            105px
+            minmax(120px, 1fr)
+            auto;
+
+        column-gap: 8px;
+    }
+
+    .album-art-container {
+        width: 105px;
+        height: 115px;
+    }
+
+    .player-button {
+        width: 34px;
+        height: 34px;
+    }
+
+    .play-button {
+        width: 48px;
+        height: 48px;
+    }
+}
+
+
+@media (max-width: 700px) {
+
+    .app {
+        grid-template-columns: 150px 1fr;
+    }
+
+    .logo h1 {
+        font-size: 17px;
+    }
+
+    .playlist-item span {
+        font-size: 12px;
+    }
+
+    .playlist-item img {
+        width: 29px;
+        height: 29px;
+    }
+
+    .sidebar-record-player {
+        display: none;
+    }
+
+    .current-playlist,
+    .queue-panel {
+        right: 8px;
+
+        width: 180px;
+    }
+
+    .room-header {
+        right: 8px;
+
+        transform:
+            scale(0.8);
+
+        transform-origin:
+            top right;
+    }
+
+    .player-panel {
+        left: 7px;
+        right: 7px;
+
+        height: 135px;
+
+        grid-template-columns:
+            85px
+            minmax(100px, 1fr)
+            auto;
+
+        grid-template-rows:
+            70px
+            25px;
+    }
+
+    .album-art-container {
+        width: 90px;
+        height: 100px;
+
+        margin-top: -22px;
+    }
+
+    .song-information {
+        padding: 7px 9px;
+    }
+
+    .song-title {
+        font-size: 12px;
+    }
+
+    .song-artist {
+        font-size: 12px;
+    }
+
+    .player-button {
+        width: 29px;
+        height: 29px;
+    }
+
+    .play-button {
+        width: 42px;
+        height: 42px;
+    }
+}
+
+
+/* =========================================================
+   REDUCED MOTION
+   ========================================================= */
+
+@media (prefers-reduced-motion: reduce) {
+
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+
+        animation-iteration-count: 1 !important;
+
+        scroll-behavior: auto !important;
+    }
+}
+
+/* =========================================================
+   MUSIC PLAYER — FINAL ALIGNMENT FIX
+   Keeps the album + vinyl together so they never overlap
+   the song information or controls.
+   ========================================================= */
+
+.player-panel {
+    position: absolute;
+    left: 16px;
+    right: 20px;
+    bottom: 10px;
+
+    height: 153px;
+    min-height: 153px;
+
+    display: grid;
+    grid-template-columns: 225px minmax(220px, 1fr) auto;
+    grid-template-rows: minmax(0, 1fr) 24px;
+
+    column-gap: 14px;
+    row-gap: 4px;
+
+    padding: 8px 18px 8px 12px;
+
+    background: rgba(65, 9, 53, 0.94);
+    border: 1px solid #671c4d;
+    border-radius: 20px;
+
+    backdrop-filter: blur(5px);
+    overflow: visible;
+    min-width: 0;
+}
+
+/* Album + vinyl get their own fixed visual area. */
+.album-art-container {
+    grid-column: 1;
+    grid-row: 1 / 3;
+
+    position: relative;
+    z-index: 5;
+
+    width: 145px;
+    height: 137px;
+
+    margin: 0 0 0 8px;
+    align-self: center;
+
+    overflow: visible;
+    border: 2px solid #270b2c;
+    border-radius: 14px;
+    background: #25051f;
+}
+
+/* Vinyl stays behind the album, but is fully contained
+   inside column 1 and therefore cannot cover the title. */
+.album-vinyl {
+    position: absolute;
+    z-index: 0;
+
+    top: 1px;
+    left: 58%;
+
+    width: 128px;
+    height: 135px;
+
+    object-fit: contain;
+    image-rendering: pixelated;
+
+    transform: translateX(0) rotate(0deg);
+    transform-origin: center;
+}
+
+/* Album artwork sits above the record. */
+#now-playing-art {
+    position: relative;
+    z-index: 2;
+
+    display: block;
+
+    width: 100%;
+    height: 100%;
+
+    object-fit: cover;
+    border-radius: 11px;
+
+    image-rendering: pixelated;
+}
+
+/* Song information is now a normal fixed-width card,
+   rather than width: fit-content, so it cannot collide
+   with the vinyl. */
+.song-information {
+    grid-column: 2;
+    grid-row: 1;
+
+    align-self: center;
+    justify-self: start;
+
+    position: relative;
+    z-index: 6;
+
+    width: min(100%, 330px);
+    min-width: 0;
+    max-width: 330px;
+    height: 62px;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+
+    padding: 9px 14px;
+
+    background: rgba(65, 9, 53, 0.96);
+    border: 1px solid rgba(218, 145, 113, 0.7);
+    border-radius: 13px;
+
+    overflow: hidden;
+}
+
+.song-title {
+    display: block;
+    width: 100%;
+
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+
+    color: #ffe5bb;
+    font-family: 'Bitcount Grid Single', 'VT323', monospace;
+    font-size: clamp(14px, 1.35vw, 19px);
+    font-weight: 600;
+}
+
+.song-artist {
+    margin-top: 4px;
+
+    color: #efb78f;
+    font-family: 'Bitcount Grid Single', 'VT323', monospace;
+    font-size: 15px;
+
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* Controls occupy their own right-side column. */
+.player-controls {
+    grid-column: 3;
+    grid-row: 1;
+
+    align-self: center;
+    justify-self: end;
+
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+
+    gap: 5px;
+    height: 62px;
+
+    padding-right: 0;
+    white-space: nowrap;
+
+    position: relative;
+    z-index: 7;
+}
+
+.player-button {
+    flex: 0 0 auto;
+
+    width: 38px;
+    height: 38px;
+
+    padding: 0;
+    border: 0;
+    background: transparent;
+
+    cursor: pointer;
+
+    transition:
+        transform 0.18s ease,
+        filter 0.18s ease;
+}
+
+.player-button img {
+    display: block;
+    width: 100%;
+    height: 100%;
+
+    object-fit: contain;
+    image-rendering: pixelated;
+}
+
+.player-button:hover {
+    transform: translateY(-3px) scale(1.06);
+    filter: brightness(1.15);
+}
+
+.player-button.play-button,
+.play-button {
+    width: 56px;
+    height: 56px;
+    background: transparent;
+    border-radius: 50%;
+}
+
+/* Time bar goes underneath the title/controls instead of
+   creating an accidental implicit grid row. */
+.progress-area {
+    grid-column: 2 / 4;
+    grid-row: 2;
+
+    align-self: center;
+
+    display: flex;
+    align-items: center;
+
+    width: 100%;
+    height: 22px;
+
+    gap: 8px;
+    padding: 0;
+
+    font-family: 'Bitcount Grid Single', 'VT323', monospace;
+    font-size: 13px;
+    color: #ffe5bb;
+
+    position: relative;
+    z-index: 8;
+}
+
+#current-time-display,
+#duration-display {
+    flex: 0 0 auto;
+    min-width: 34px;
+    color: #ffe5bb;
+    white-space: nowrap;
+}
+
+#current-time-display {
+    text-align: right;
+}
+
+.progress-bar {
+    position: relative;
+
+    flex: 1;
+    width: auto;
+    min-width: 80px;
+    height: 14px;
+
+    background:
+        url('assets/player/timebar.png')
+        center / 100% 100%
+        no-repeat;
+
+    cursor: pointer;
+    overflow: hidden;
+}
+
+.progress {
+    position: absolute;
+    left: 0;
+    top: 0;
+
+    width: 0%;
+    height: 100%;
+
+    background: transparent;
+    pointer-events: none;
+}
+
+/* Keep the equalizer visible and centered in the player. */
+.equalizer {
+    position: absolute;
+
+    left: 50%;
+    bottom: 5px;
+
+    transform: translateX(-50%);
+
+    width: 64px;
+    height: 17px;
+
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+
+    gap: 2px;
+
+    z-index: 9;
+    pointer-events: none;
+}
+
+.equalizer span {
+    width: 3px;
+}
+
+/* =========================================================
+   RESPONSIVE PLAYER FIX
+   ========================================================= */
+
+@media (max-width: 1100px) {
+    .player-panel {
+        grid-template-columns: 190px minmax(180px, 1fr) auto;
+        column-gap: 10px;
+    }
+
+    .album-art-container {
+        width: 130px;
+        height: 125px;
+    }
+
+    .album-vinyl {
+        width: 116px;
+        height: 123px;
+    }
+
+    .song-information {
+        max-width: 290px;
+    }
+
+    .player-button {
+        width: 34px;
+        height: 34px;
+    }
+
+    .player-button.play-button,
+    .play-button {
+        width: 50px;
+        height: 50px;
+    }
+}
+
+@media (max-width: 900px) {
+    .player-panel {
+        left: 10px;
+        right: 12px;
+
+        grid-template-columns: 165px minmax(150px, 1fr) auto;
+        grid-template-rows: minmax(0, 1fr) 22px;
+
+        height: 145px;
+        min-height: 145px;
+
+        padding-left: 8px;
+    }
+
+    .album-art-container {
+        width: 112px;
+        height: 120px;
+        margin-left: 4px;
+    }
+
+    .album-vinyl {
+        width: 106px;
+        height: 116px;
+    }
+
+    .song-information {
+        width: min(100%, 250px);
+        max-width: 250px;
+    }
+
+    .song-title {
+        font-size: 14px;
+    }
+
+    .song-artist {
+        font-size: 13px;
+    }
+}
+
+@media (max-width: 700px) {
+    .player-panel {
+        left: 7px;
+        right: 7px;
+
+        grid-template-columns: 115px minmax(100px, 1fr) auto;
+        column-gap: 5px;
+
+        height: 135px;
+        min-height: 135px;
+    }
+
+    .album-art-container {
+        width: 90px;
+        height: 102px;
+        margin-left: 2px;
+    }
+
+    .album-vinyl {
+        width: 88px;
+        height: 99px;
+    }
+
+    .song-information {
+        height: 56px;
+        padding: 7px 9px;
+        max-width: 210px;
+    }
+
+    .song-title,
+    .song-artist {
+        font-size: 12px;
+    }
+
+    .player-controls {
+        gap: 2px;
+    }
+
+    .player-button {
+        width: 28px;
+        height: 28px;
+    }
+
+    .player-button.play-button,
+    .play-button {
+        width: 40px;
+        height: 40px;
+    }
+
+    .progress-area {
+        font-size: 11px;
+        gap: 5px;
+    }
+
+    #current-time-display,
+    #duration-display {
+        min-width: 28px;
+    }
+}
+
+
+/* =========================================================
+   TOP MUSIC SEARCH — JAMENDO DISCOVERY
+   Keeps the room artwork untouched and uses the empty
+   upper-center area for Spotify-like discovery.
+   ========================================================= */
+
+.music-search {
+    position: absolute;
+    top: 22px;
+    left: 50%;
+    width: min(54%, 610px);
+    transform: translateX(-50%);
+    z-index: 30;
+}
+
+.search-box {
+    position: relative;
+    width: 100%;
+    height: 46px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 0 12px;
+
+    background: rgba(38, 5, 34, 0.82);
+    border: 1px solid rgba(246, 198, 132, 0.72);
+    border-radius: 18px;
+
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+
+    box-shadow:
+        0 7px 25px rgba(28, 0, 20, 0.28),
+        inset 0 1px 1px rgba(255, 230, 180, 0.12);
+
+    transition:
+        border-color 0.18s ease,
+        background 0.18s ease,
+        box-shadow 0.18s ease,
+        transform 0.18s ease;
+}
+
+.search-box:focus-within {
+    background: rgba(48, 6, 42, 0.92);
+    border-color: #f2c38b;
+    box-shadow:
+        0 9px 30px rgba(30, 0, 22, 0.36),
+        0 0 0 2px rgba(242, 195, 139, 0.10),
+        inset 0 1px 1px rgba(255, 230, 180, 0.16);
+}
+
+.search-icon {
+    flex: 0 0 auto;
+    width: 24px;
+    height: 24px;
+    display: grid;
+    place-items: center;
+    color: #ffd99a;
+    font-family: Arial, sans-serif;
+    font-size: 27px;
+    line-height: 1;
+    transform: rotate(-20deg);
+    opacity: 0.95;
+}
+
+#music-search-input {
+    min-width: 0;
+    width: 100%;
+    height: 100%;
+
+    border: 0;
+    outline: 0;
+    background: transparent;
+    color: #ffe8c4;
+
+    font-family: "Bitcount Grid Single", "VT323", monospace;
+    font-size: 15px;
+}
+
+#music-search-input::placeholder {
+    color: rgba(255, 219, 175, 0.72);
+}
+
+#music-search-input::-webkit-search-cancel-button {
+    display: none;
+}
+
+.clear-search {
+    flex: 0 0 auto;
+    width: 26px;
+    height: 26px;
+    display: grid;
+    place-items: center;
+
+    border: 0;
+    border-radius: 50%;
+    background: rgba(255, 216, 164, 0.10);
+    color: #ffe1ad;
+
+    font-family: Arial, sans-serif;
+    font-size: 20px;
+    line-height: 1;
+    cursor: pointer;
+
+    transition: transform 0.15s ease, background 0.15s ease;
+}
+
+.clear-search:hover {
+    transform: scale(1.08);
+    background: rgba(255, 216, 164, 0.18);
+}
+
+.search-results {
+    position: absolute;
+    top: calc(100% + 8px);
+    left: 0;
+    right: 0;
+
+    max-height: min(440px, 52vh);
+    overflow-y: auto;
+    padding: 8px;
+
+    background: rgba(43, 6, 38, 0.96);
+    border: 1px solid rgba(238, 179, 122, 0.70);
+    border-radius: 16px;
+
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+
+    box-shadow:
+        0 18px 45px rgba(20, 0, 14, 0.42),
+        inset 0 1px 1px rgba(255, 232, 190, 0.10);
+
+    scrollbar-width: thin;
+    scrollbar-color: #9e496c transparent;
+}
+
+.search-results[hidden] {
+    display: none;
+}
+
+.search-results-heading {
+    padding: 6px 9px 8px;
+    color: #f4bd83;
+    font-family: "Bitcount Grid Single", "VT323", monospace;
+    font-size: 12px;
+    letter-spacing: 0.3px;
+}
+
+.search-result {
+    width: 100%;
+    min-height: 58px;
+    display: grid;
+    grid-template-columns: 45px minmax(0, 1fr) auto 25px;
+    align-items: center;
+    gap: 9px;
+    padding: 6px 7px;
+
+    border: 1px solid transparent;
+    border-radius: 11px;
+    background: transparent;
+    color: #ffe6bf;
+    text-align: left;
+    font: inherit;
+    cursor: pointer;
+
+    transition:
+        background 0.15s ease,
+        border-color 0.15s ease,
+        transform 0.15s ease;
+}
+
+.search-result:hover,
+.search-result:focus-visible {
+    outline: none;
+    background: rgba(244, 176, 119, 0.13);
+    border-color: rgba(240, 194, 137, 0.48);
+    transform: translateX(2px);
+}
+
+.search-result > img {
+    width: 45px;
+    height: 45px;
+    object-fit: cover;
+    border: 1px solid rgba(247, 201, 143, 0.55);
+    border-radius: 7px;
+    image-rendering: pixelated;
+}
+
+.search-result-info {
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.search-result-info strong,
+.search-result-info small {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.search-result-info strong {
+    color: #ffe7b8;
+    font-family: "Bitcount Grid Single", "VT323", monospace;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.search-result-info small {
+    color: #dca47f;
+    font-size: 11px;
+}
+
+.search-result time {
+    color: #efc38d;
+    font-size: 10px;
+    white-space: nowrap;
+}
+
+.search-play-icon {
+    color: #f4bd83;
+    font-family: Arial, sans-serif;
+    font-size: 13px;
+    text-align: center;
+    opacity: 0.85;
+}
+
+.search-message {
+    padding: 20px 12px;
+    color: #efc7aa;
+    font-family: "Bitcount Grid Single", "VT323", monospace;
+    font-size: 12px;
+    line-height: 1.35;
+    text-align: center;
+}
+
+.search-message.error {
+    color: #f2a5a5;
+}
+
+.online-badge {
+    display: none;
+}
+
+/* Search stays above the room but below the clock/weather controls. */
+.music-search + .room-header {
+    z-index: 35;
+}
+
+@media (max-width: 1100px) {
+    .music-search {
+        width: min(48%, 500px);
+        left: 45%;
+    }
+}
+
+@media (max-width: 900px) {
+    .music-search {
+        top: 68px;
+        left: 42%;
+        width: min(48%, 430px);
+    }
+}
+
+@media (max-width: 700px) {
+    .music-search {
+        top: 58px;
+        left: 38%;
+        width: min(52%, 320px);
+    }
+
+    .search-box {
+        height: 40px;
+        border-radius: 15px;
+    }
+
+    #music-search-input {
+        font-size: 12px;
+    }
+
+    .search-result {
+        grid-template-columns: 38px minmax(0, 1fr) 20px;
+    }
+
+    .search-result > img {
+        width: 38px;
+        height: 38px;
+    }
+
+    .search-result time {
+        display: none;
+    }
+}

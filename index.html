@@ -6,7 +6,7 @@
 
   <meta
     http-equiv="Content-Security-Policy"
-    content="default-src 'self' pixel-player: data:; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com data:;"
+    content="default-src 'self' pixel-player: data:; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com data:; img-src 'self' data: https://usercontent.jamendo.com; media-src 'self' pixel-player: https:; connect-src 'self';"
   />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -33,12 +33,33 @@
 
     <main class="room">
       <div class="room-background"></div>
+      <div class="ambient-glow"></div>
+      <div class="dust-motes" id="dust-motes"></div>
       <div class="room-content">
+
+        <!-- PixelPlayer search / online discovery -->
+        <section class="music-search" aria-label="Search music">
+          <div class="search-box">
+            <span class="search-icon" aria-hidden="true">⌕</span>
+            <input
+              id="music-search-input"
+              type="search"
+              placeholder="Search songs, artists or albums..."
+              autocomplete="off"
+              spellcheck="false"
+              aria-label="Search songs, artists or albums"
+              aria-controls="search-results"
+              aria-expanded="false"
+            />
+            <button id="clear-search-btn" class="clear-search" type="button" aria-label="Clear search" hidden>×</button>
+          </div>
+          <div id="search-results" class="search-results" role="listbox" aria-label="Music search results" hidden></div>
+        </section>
         <section class="room-header">
           <div class="clock"><span id="current-time">08:45</span><small>PM</small><em>Fri, Aug 15, 2026</em></div>
           <div class="weather"><span class="weather-icon">☀</span><strong>28°C</strong><small>Mostly cloudy</small></div>
         </section>
-        <section class="current-playlist"><h2><img src="assets/decorations/Teddy.png" alt=""> Playlist 1</h2><p><span id="playlist-count">0/0</span> playing</p></section>
+        <section class="current-playlist"><h2><img src="assets/decorations/Teddy.png" alt=""> <span id="current-folder-name">Playlist 1</span></h2><p><span id="playlist-count">0/0</span> playing</p></section>
         <section class="queue-panel">
           <div class="queue-header"><h2>Up next</h2><span>QUEUE</span></div>
           <ul id="track-list" class="track-list">
@@ -53,8 +74,9 @@
       </div>
 
       <section class="player-panel">
-        <div class="album-art-container"><img class="album-vinyl" src="assets/vinyl/vinyl.png" alt=""><img id="now-playing-art" src="assets/background/background.png" alt="Album artwork"></div>
-        <div class="song-information"><div id="now-playing-title" class="song-title">Vathapi Ganapathim</div><div id="now-playing-artist" class="song-artist">Artist: Sooryagayatri</div></div>
+        <div class="album-art-container"><img class="album-vinyl" src="assets/vinyl/vinyl.png" alt=""><img id="now-playing-art" src="assets/background/background.png" alt="Album artwork">
+        </div>
+        <div class="song-information"><div id="now-playing-title" class="song-title">No song selected</div><div id="now-playing-artist" class="song-artist">Choose a song to begin</div></div>
         <div class="player-controls">
           <button id="random-btn" class="player-button" title="Random"><img src="assets/player/random.png" alt="Random"></button>
           <button id="previous-btn" class="player-button" title="Previous"><img src="assets/player/previous.png" alt="Previous"></button>
@@ -62,8 +84,46 @@
           <button id="next-btn" class="player-button" title="Next"><img src="assets/player/next.png" alt="Next"></button>
           <button id="favourite-btn" class="player-button" title="Favourite"><img src="assets/player/favourite.png" alt="Favourite"></button>
         </div>
-        <div class="progress-area"><span id="current-time-display">1:24</span><div class="progress-bar"><div id="progress" class="progress"></div></div><span id="duration-display">3:52</span></div>
-        <img class="equalizer" src="assets/player/equalizer.png" alt="">
+        <div class="progress-area">
+
+    <span id="current-time-display">00:00</span>
+
+    <div class="progress-bar" aria-label="Music progress">
+
+        <!-- Unfilled decorative track -->
+        <div class="seek-track"></div>
+
+        <!-- This width is already controlled by renderer.js -->
+        <div id="progress" class="progress">
+
+            <!-- Pixel waveform -->
+            <div class="seek-wave" aria-hidden="true">
+                <i></i><i></i><i></i><i></i><i></i>
+                <i></i><i></i><i></i><i></i><i></i>
+                <i></i><i></i><i></i><i></i><i></i>
+                <i></i><i></i><i></i><i></i><i></i>
+                <i></i><i></i><i></i><i></i><i></i>
+                <i></i><i></i><i></i><i></i><i></i>
+                <i></i><i></i><i></i><i></i><i></i>
+                <i></i><i></i><i></i><i></i><i></i>
+                <i></i><i></i><i></i><i></i><i></i>
+                <i></i><i></i><i></i><i></i><i></i>
+            </div>
+
+            <!-- Whimsical flower thumb -->
+            <span class="seek-flower" aria-hidden="true"></span>
+
+        </div>
+
+        <!-- Decorative flowers at the ends -->
+        <span class="seek-decoration seek-decoration-left" aria-hidden="true"></span>
+        <span class="seek-decoration seek-decoration-right" aria-hidden="true"></span>
+
+    </div>
+
+    <span id="duration-display">--:--</span>
+
+</div>
         <audio id="audio" preload="metadata"></audio>
       </section>
     </main>

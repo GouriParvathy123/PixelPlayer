@@ -1,3 +1,8 @@
+const JamendoProvider = require('./js/jamendo-provider');
+require('dotenv').config();
+
+let jamendo = null;
+
 const { app, BrowserWindow, ipcMain, dialog, protocol, net } = require('electron');
 const path = require('path');
 const fs = require('fs');
@@ -113,4 +118,44 @@ ipcMain.handle('scan-library', async () => {
   }
 
   return songs;
+});
+
+// --- IPC: Initialize Jamendo Provider ---
+ipcMain.handle('init-jamendo', async () => {
+  const clientId = process.env.JAMENDO_CLIENT_ID;
+  if (!clientId) {
+    console.warn('JAMENDO_CLIENT_ID not set in .env');
+    return { success: false, error: 'client_id not configured' };
+  }
+
+  jamendo = new JamendoProvider(clientId);
+  return { success: true };
+});
+
+// --- IPC: Jamendo Search ---
+ipcMain.handle('jamendo-search', async (event, query) => {
+  if (!jamendo) {
+    return { error: 'Jamendo not initialized. Call init first.' };
+  }
+
+  try {
+    const results = await jamendo.search(query);
+    return { results };
+  } catch (error) {
+    return { error: error.message };
+  }
+});
+
+// --- IPC: Jamendo Trending ---
+ipcMain.handle('jamendo-trending', async () => {
+  if (!jamendo) {
+    return { error: 'Jamendo not initialized. Call init first.' };
+  }
+
+  try {
+    const results = await jamendo.trending();
+    return { results };
+  } catch (error) {
+    return { error: error.message };
+  }
 });

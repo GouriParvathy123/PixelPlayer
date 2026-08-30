@@ -6,3 +6,8 @@ contextBridge.exposeInMainWorld('library', {
   chooseFolder: () => ipcRenderer.invoke('choose-folder'),
   scanLibrary: () => ipcRenderer.invoke('scan-library'),
 });
+contextBridge.exposeInMainWorld('jamendo', {
+  init: () => ipcRenderer.invoke('init-jamendo'),
+  search: (query) => ipcRenderer.invoke('jamendo-search', query),
+  trending: () => ipcRenderer.invoke('jamendo-trending'),
+});
