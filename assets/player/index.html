@@ -74,9 +74,8 @@
       </div>
 
       <section class="player-panel">
-        <div class="album-art-container"><img class="album-vinyl" src="assets/vinyl/vinyl.png" alt=""><img id="now-playing-art" src="assets/background/background.png" alt="Album artwork">
-        </div>
-        <div class="song-information"><div id="now-playing-title" class="song-title">No song selected</div><div id="now-playing-artist" class="song-artist">Choose a song to begin</div></div>
+        <div class="album-art-container"><img class="album-vinyl" src="assets/vinyl/vinyl.png" alt=""><img id="now-playing-art" src="assets/background/background.png" alt="Album artwork"></div>
+        <div class="song-information"><div id="now-playing-title" class="song-title">Vathapi Ganapathim</div><div id="now-playing-artist" class="song-artist">Artist: Sooryagayatri</div></div>
         <div class="player-controls">
           <button id="random-btn" class="player-button" title="Random"><img src="assets/player/random.png" alt="Random"></button>
           <button id="previous-btn" class="player-button" title="Previous"><img src="assets/player/previous.png" alt="Previous"></button>
@@ -84,46 +83,11 @@
           <button id="next-btn" class="player-button" title="Next"><img src="assets/player/next.png" alt="Next"></button>
           <button id="favourite-btn" class="player-button" title="Favourite"><img src="assets/player/favourite.png" alt="Favourite"></button>
         </div>
-        <div class="progress-area">
-
-    <span id="current-time-display">00:00</span>
-
-    <div class="progress-bar" aria-label="Music progress">
-
-        <!-- Unfilled decorative track -->
-        <div class="seek-track"></div>
-
-        <!-- This width is already controlled by renderer.js -->
-        <div id="progress" class="progress">
-
-            <!-- Pixel waveform -->
-            <div class="seek-wave" aria-hidden="true">
-                <i></i><i></i><i></i><i></i><i></i>
-                <i></i><i></i><i></i><i></i><i></i>
-                <i></i><i></i><i></i><i></i><i></i>
-                <i></i><i></i><i></i><i></i><i></i>
-                <i></i><i></i><i></i><i></i><i></i>
-                <i></i><i></i><i></i><i></i><i></i>
-                <i></i><i></i><i></i><i></i><i></i>
-                <i></i><i></i><i></i><i></i><i></i>
-                <i></i><i></i><i></i><i></i><i></i>
-                <i></i><i></i><i></i><i></i><i></i>
-            </div>
-
-            <!-- Whimsical flower thumb -->
-            <span class="seek-flower" aria-hidden="true"></span>
-
+        <div class="progress-area"><span id="current-time-display">1:24</span><div class="progress-bar"><div id="progress" class="progress"></div></div><span id="duration-display">3:52</span></div>
+        <div class="equalizer" id="equalizer">
+          <span></span><span></span><span></span><span></span><span></span>
+          <span></span><span></span><span></span><span></span><span></span>
         </div>
-
-        <!-- Decorative flowers at the ends -->
-        <span class="seek-decoration seek-decoration-left" aria-hidden="true"></span>
-        <span class="seek-decoration seek-decoration-right" aria-hidden="true"></span>
-
-    </div>
-
-    <span id="duration-display">--:--</span>
-
-</div>
         <audio id="audio" preload="metadata"></audio>
       </section>
     </main>

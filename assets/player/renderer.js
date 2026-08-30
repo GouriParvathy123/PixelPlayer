@@ -647,26 +647,6 @@ function playTrack(
 
 
   /*
-   * Reset the timeline immediately —
-   * the real duration/current time
-   * populate once this track's
-   * metadata and playback events fire.
-   */
-
-  if (progress) {
-    progress.style.width = '0%';
-  }
-
-  if (currentTimeDisplay) {
-    currentTimeDisplay.textContent = '00:00';
-  }
-
-  if (durationDisplay) {
-    durationDisplay.textContent = '--:--';
-  }
-
-
-  /*
    * Update now-playing panel
    */
 
@@ -748,30 +728,7 @@ if (playButton) {
     async () => {
 
       if (!audio.src) {
-
-        /*
-         * No track loaded yet — start
-         * the first song in the current
-         * queue (or playlist) instead of
-         * doing nothing.
-         */
-
-        const queue =
-          playbackQueue.length
-            ? playbackQueue
-            : songs;
-
-        if (!queue.length) {
-          return;
-        }
-
-        playTrack(
-          queue[0],
-          0
-        );
-
         return;
-
       }
 
 
@@ -947,6 +904,8 @@ audio.addEventListener(
 
     }
 
+    document.getElementById('equalizer')?.classList.add('playing');
+
 
     playButton.innerHTML =
       '<span class="pause-glyph" aria-hidden="true">||</span>';
@@ -983,6 +942,8 @@ audio.addEventListener(
 
     }
 
+    document.getElementById('equalizer')?.classList.remove('playing');
+
 
     playButton.innerHTML =
       '<img src="assets/player/play.png" alt="Play">';
@@ -1018,6 +979,8 @@ audio.addEventListener(
       );
 
     }
+
+    document.getElementById('equalizer')?.classList.remove('playing');
 
 
     playButton.innerHTML =
@@ -1064,49 +1027,63 @@ audio.addEventListener(
    AUDIO TIME UPDATE
    ========================================================= */
 
-audio.addEventListener('timeupdate', () => {
-    if (!audio.duration || !Number.isFinite(audio.duration)) return;
+audio.addEventListener(
+  'timeupdate',
+  () => {
 
-    const currentTime = audio.currentTime;
-    const duration = audio.duration;
+    if (
+      !audio.duration ||
+      !Number.isFinite(audio.duration)
+    ) {
+
+      return;
+
+    }
+
 
     const percentage =
-        (currentTime / duration) * 100;
+      (
+        audio.currentTime /
+        audio.duration
+      ) * 100;
 
-    // Move the progress / flower knob
-    progress.style.width = `${percentage}%`;
 
-    // LEFT → elapsed time
+    progress.style.width =
+      `${percentage}%`;
+
+
     currentTimeDisplay.textContent =
-        formatTime(currentTime);
+      formatTime(
+        audio.currentTime
+      );
 
-    // RIGHT → remaining time
-    const remainingTime = Math.max(0, duration - currentTime);
-
-    durationDisplay.textContent =
-        `-${formatTime(remainingTime)}`;
-});
+  }
+);
 
 
 /* =========================================================
    AUDIO METADATA
    ========================================================= */
 
-audio.addEventListener('loadedmetadata', () => {
-    if (!audio.duration || !Number.isFinite(audio.duration)) {
-        currentTimeDisplay.textContent = '00:00';
-        durationDisplay.textContent = '--:--';
-        return;
+audio.addEventListener(
+  'loadedmetadata',
+  () => {
+
+    if (
+      Number.isFinite(
+        audio.duration
+      )
+    ) {
+
+      durationDisplay.textContent =
+        formatTime(
+          audio.duration
+        );
+
     }
 
-    // Start of song
-    currentTimeDisplay.textContent =
-        '00:00';
-
-    // Entire duration = remaining time initially
-    durationDisplay.textContent =
-        `-${formatTime(audio.duration)}`;
-});
+  }
+);
 
 
 /* =========================================================
@@ -1913,48 +1890,3 @@ function spawnDustMotes() {
 }
 
 spawnDustMotes();
-
-
-/* =========================================================
-   INITIAL IDLE STATE
-   ========================================================= */
-
-/*
- * On startup there is no song selected yet.
- * Force the player into a clean idle state
- * instead of trusting whatever happened to
- * be sitting in the HTML.
- */
-
-function resetPlayerToIdle() {
-
-  audio.pause();
-
-  audio.removeAttribute('src');
-
-  audio.load();
-
-
-  if (progress) {
-    progress.style.width = '0%';
-  }
-
-  if (currentTimeDisplay) {
-    currentTimeDisplay.textContent = '00:00';
-  }
-
-  if (durationDisplay) {
-    durationDisplay.textContent = '--:--';
-  }
-
-  if (nowPlayingTitle) {
-    nowPlayingTitle.textContent = 'No song selected';
-  }
-
-  if (nowPlayingArtist) {
-    nowPlayingArtist.textContent = 'Choose a song to begin';
-  }
-
-}
-
-resetPlayerToIdle();
