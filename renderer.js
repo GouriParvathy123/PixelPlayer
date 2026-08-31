@@ -269,18 +269,38 @@ if (playlistNav) {
               )
             );
 
+          /*
+           * Wider falloff radius so neighboring
+           * tabs also swell a little, like a
+           * macOS dock cascade.
+           */
+
           const influence =
             Math.max(
               0,
-              1 - distance / 105
+              1 - distance / 150
             );
+
+          /*
+           * Ease the influence curve so it
+           * ramps up smoothly near the cursor
+           * instead of feeling linear.
+           */
+
+          const eased =
+            influence * influence * (3 - 2 * influence);
 
           button.style.setProperty(
             '--dock-scale',
             (
               1 +
-              influence * 0.08
+              eased * 0.07
             ).toFixed(3)
+          );
+
+          button.style.setProperty(
+            '--dock-lift',
+            `${(eased * 4).toFixed(2)}px`
           );
 
         }
@@ -299,6 +319,10 @@ if (playlistNav) {
 
           button.style.removeProperty(
             '--dock-scale'
+          );
+
+          button.style.removeProperty(
+            '--dock-lift'
           );
 
         }
@@ -949,7 +973,7 @@ audio.addEventListener(
 
 
     playButton.innerHTML =
-      '<span class="pause-glyph" aria-hidden="true">||</span>';
+      '<img src="assets/player/pause.png" alt="Pause">';
 
 
     playButton.setAttribute(
