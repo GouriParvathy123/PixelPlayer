@@ -29,12 +29,37 @@
         <button class="playlist-item" data-playlist="favourites"><img src="assets/player/favourite.png" alt=""><span>Favourites</span></button>
         <button id="choose-folder-btn" class="playlist-item add-playlist"><img src="assets/decorations/Add.png" alt=""><span>Add Playlist</span></button>
       </nav>
-      <div class="sidebar-record-player">
-        <span class="note-float note-1" aria-hidden="true">♪</span>
-        <span class="note-float note-2" aria-hidden="true">♫</span>
-        <span class="note-float note-3" aria-hidden="true">♪</span>
-        <img src="assets/vinyl/recordplayer.png" alt="Pixel record player">
-      </div>
+      <div class="sidebar-record-player" id="sidebar-turntable">
+
+    <!-- Static record player base -->
+    <img
+        class="turntable-base"
+        src="assets/vinyl/player-base.png"
+        alt=""
+    >
+
+    <!-- Rotating vinyl -->
+    <img
+        class="turntable-vinyl"
+        src="assets/vinyl/vinyl-record.png"
+        alt=""
+    >
+
+    <!-- Tonearm -->
+    <img
+        class="turntable-arm"
+        src="assets/vinyl/tonearm.png"
+        alt=""
+    >
+
+    <!-- Optional knob -->
+    <img
+        class="turntable-knob"
+        src="assets/vinyl/knob.png"
+        alt=""
+    >
+
+</div>
     </aside>
 
     <main class="room">

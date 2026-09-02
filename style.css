@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Bitcount+Grid+Single:wght@100..900&family=VT323&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Bitcount+Grid+Single:wght@100..900&family=VT323&display=swap');
 
 /* =========================================================
    PIXEL PLAYER — CLEAN REFERENCE LAYOUT
@@ -77,13 +77,13 @@ body {
 .vine-garland {
     display: block;
 
-    width: 100%;
-    height: 58px;
+    width: 110%;
+    height: 60px;
 
     margin-bottom: -14px;
 
-    object-fit: cover;
-    object-position: center top;
+    object-fit: fill;
+    object-position:  top;
 
     pointer-events: none;
 }
@@ -104,15 +104,13 @@ body {
 }
 
 .logo h1 {
-    font-family: "Press Start 2P", "VT323", monospace;
+    font-family: "Bitcount Grid Single", "VT323", monospace;
 
-    font-size: clamp(13px, 1.35vw, 17px);
+    font-size: clamp(20px, 2vw, 27px);
 
-    font-weight: 400;
+    font-weight: 650;
 
-    letter-spacing: 0px;
-
-    line-height: 1.4;
+    letter-spacing: 1px;
 
     background:
         linear-gradient(
@@ -128,7 +126,7 @@ body {
     color: transparent;
 
     text-shadow:
-        2px 2px 0 rgba(124, 39, 83, 0.8);
+        3px 3px 0 rgba(124, 39, 83, 0.8);
 }
 
 
@@ -380,13 +378,16 @@ body {
     image-rendering: pixelated;
 }
 
+/* =========================================================
+   FLOATING MUSIC NOTES
+   ========================================================= */
+
 .note-float {
     position: absolute;
 
-    bottom: 172px;
+    bottom: 270px;
 
     font-family: "Bitcount Grid Single", "VT323", monospace;
-
     font-size: 18px;
 
     color: #ffd36e;
@@ -395,13 +396,19 @@ body {
 
     opacity: 0;
 
+    z-index: 10;
+
+    pointer-events: none;
+
     animation: note-drift 4.5s ease-in infinite;
 }
 
+
 .note-1 {
-    left: 32%;
+    left: 20%;
     animation-delay: 0s;
 }
+
 
 .note-2 {
     left: 50%;
@@ -409,26 +416,33 @@ body {
     animation-delay: 1.6s;
 }
 
+
 .note-3 {
-    left: 65%;
+    left: 75%;
     animation-delay: 3s;
 }
 
+
 @keyframes note-drift {
+
     0% {
         transform: translateY(0) rotate(0deg);
         opacity: 0;
     }
+
     15% {
         opacity: 1;
     }
+
     80% {
         opacity: 0.7;
     }
+
     100% {
         transform: translateY(-70px) rotate(12deg);
         opacity: 0;
     }
+
 }
 
 
@@ -3047,7 +3061,7 @@ body {
     }
 }
 /* =========================================================
-   PIXELPLAYER — CYLINDRICAL GOLDEN-LIQUID SEEK BAR
+   PIXELPLAYER — WHIMSICAL MUSIC SEEK BAR
    ========================================================= */
 
 .progress-area {
@@ -3098,9 +3112,9 @@ body {
 }
 
 
-/* ---------------------------------------------------------
-   THE TUBE (clickable hit area)
-   --------------------------------------------------------- */
+/* =========================================================
+   SEEK BAR
+   ========================================================= */
 
 .progress-bar {
     position: relative;
@@ -3114,25 +3128,30 @@ body {
 
     cursor: pointer;
 
+    overflow: visible;
+
+    /*
+       IMPORTANT:
+       No outer box.
+       No rectangular container.
+    */
     background: transparent;
 }
 
 
 /* ---------------------------------------------------------
-   GLASS TUBE SHELL
-   A vertical shading gradient + inset shadow sells the
-   "cylindrical" read — light catches the top, the
-   underside falls into shadow, like a rounded glass rod.
+   BASE TRACK
    --------------------------------------------------------- */
 
-.seek-tube {
+.seek-track {
     position: absolute;
 
-    left: 1px;
-    right: 1px;
+    left: 12px;
+    right: 12px;
+
     top: 50%;
 
-    height: 15px;
+    height: 4px;
 
     transform: translateY(-50%);
 
@@ -3141,150 +3160,414 @@ body {
     background:
         linear-gradient(
             180deg,
-            #4a1a3c 0%,
-            #2c0a24 45%,
-            #1c0617 100%
+            rgba(45, 8, 37, 0.95),
+            rgba(91, 20, 65, 0.82)
         );
 
-    border: 1px solid rgba(255, 214, 158, 0.30);
+    border-top:
+        1px solid rgba(244, 180, 129, 0.30);
 
     box-shadow:
-        inset 0 3px 4px rgba(0, 0, 0, 0.55),
-        inset 0 -1px 1px rgba(255, 255, 255, 0.06);
+        0 1px 3px rgba(20, 0, 15, 0.65),
+        inset 0 1px 0 rgba(255, 230, 190, 0.10);
 
-    overflow: hidden;
+    pointer-events: none;
 }
 
-/* Thin glass highlight running along the top curve of the tube */
-.seek-tube::before {
+
+/* Tiny pixel glimmer running along the track */
+
+.seek-track::before {
     content: "";
 
     position: absolute;
 
-    left: 8%;
-    right: 8%;
-    top: 2px;
+    left: 0;
+    right: 0;
 
-    height: 2px;
+    top: 1px;
+
+    height: 1px;
+
+    background:
+        repeating-linear-gradient(
+            90deg,
+            rgba(255, 219, 164, 0.45) 0 2px,
+            transparent 2px 7px
+        );
+
+    opacity: 0.55;
+}
+
+
+/* =========================================================
+   PROGRESS
+   ========================================================= */
+
+.progress {
+    position: absolute;
+
+    left: 12px;
+    top: 0;
+
+    width: 0%;
+    height: 100%;
+
+    background: transparent;
+
+    pointer-events: none;
+
+    overflow: visible;
+}
+
+
+/* ---------------------------------------------------------
+   ACTIVE LINE
+   --------------------------------------------------------- */
+
+.progress::before {
+    content: "";
+
+    position: absolute;
+
+    left: 0;
+
+    top: 50%;
+
+    width: 100%;
+    height: 4px;
+
+    transform: translateY(-50%);
 
     border-radius: 999px;
 
     background:
         linear-gradient(
             90deg,
-            transparent,
-            rgba(255, 255, 255, 0.30),
-            transparent
+            #d84f86,
+            #ef8b68 55%,
+            #f6bf72
         );
+
+    box-shadow:
+        0 0 5px rgba(238, 113, 143, 0.30);
 
     pointer-events: none;
 }
 
 
-/* ---------------------------------------------------------
-   GOLDEN LIQUID FILL
-   Sits inside the tube, filled up to the current
-   playback position.
-   --------------------------------------------------------- */
+/* =========================================================
+   PIXEL WAVEFORM
+   ========================================================= */
 
-.progress {
+.seek-wave {
     position: absolute;
 
-    left: 1px;
-    top: 50%;
+    left: 0;
+    bottom: 8px;
 
-    width: 0%;
+    width: calc(100% - 4px);
     height: 15px;
 
-    transform: translateY(-50%);
+    display: flex;
 
-    border-radius: 999px;
+    align-items: flex-end;
+
+    justify-content: space-between;
+
+    gap: 2px;
+
+    overflow: hidden;
+
+    opacity: 0.95;
+
+    pointer-events: none;
+}
+
+
+/* Individual waveform pixels */
+
+.seek-wave i {
+    display: block;
+
+    flex: 1;
+
+    min-width: 2px;
+
+    max-width: 4px;
+
+    height: 5px;
 
     background:
         linear-gradient(
             180deg,
-            #ffe9a8 0%,
-            #f3b23f 45%,
-            #a86e18 100%
+            #f5c477,
+            #e96b91
         );
 
-    box-shadow:
-        inset 0 1px 1px rgba(255, 255, 255, 0.45),
-        inset 0 -2px 2px rgba(80, 45, 0, 0.45);
+    border-radius: 1px;
 
-    overflow: hidden;
+    transform-origin: bottom;
 
-    pointer-events: none;
+    animation:
+        seek-wave-breathe
+        0.85s
+        steps(4)
+        infinite alternate;
 }
 
-/*
- * Diagonal liquid streaks drifting through the gold fill —
- * a slow, syrupy flow rather than a bright glow.
- */
-.progress::before {
-    content: "";
 
+/* Different pixel heights */
+
+.seek-wave i:nth-child(1)  { height: 4px; }
+.seek-wave i:nth-child(2)  { height: 8px; }
+.seek-wave i:nth-child(3)  { height: 5px; }
+.seek-wave i:nth-child(4)  { height: 12px; }
+.seek-wave i:nth-child(5)  { height: 7px; }
+.seek-wave i:nth-child(6)  { height: 14px; }
+.seek-wave i:nth-child(7)  { height: 8px; }
+.seek-wave i:nth-child(8)  { height: 11px; }
+.seek-wave i:nth-child(9)  { height: 5px; }
+.seek-wave i:nth-child(10) { height: 9px; }
+
+.seek-wave i:nth-child(11) { height: 13px; }
+.seek-wave i:nth-child(12) { height: 6px; }
+.seek-wave i:nth-child(13) { height: 10px; }
+.seek-wave i:nth-child(14) { height: 15px; }
+.seek-wave i:nth-child(15) { height: 7px; }
+.seek-wave i:nth-child(16) { height: 12px; }
+.seek-wave i:nth-child(17) { height: 5px; }
+.seek-wave i:nth-child(18) { height: 9px; }
+.seek-wave i:nth-child(19) { height: 13px; }
+.seek-wave i:nth-child(20) { height: 7px; }
+
+.seek-wave i:nth-child(21) { height: 11px; }
+.seek-wave i:nth-child(22) { height: 6px; }
+.seek-wave i:nth-child(23) { height: 14px; }
+.seek-wave i:nth-child(24) { height: 8px; }
+.seek-wave i:nth-child(25) { height: 5px; }
+.seek-wave i:nth-child(26) { height: 12px; }
+.seek-wave i:nth-child(27) { height: 7px; }
+.seek-wave i:nth-child(28) { height: 15px; }
+.seek-wave i:nth-child(29) { height: 8px; }
+.seek-wave i:nth-child(30) { height: 11px; }
+
+.seek-wave i:nth-child(31) { height: 5px; }
+.seek-wave i:nth-child(32) { height: 13px; }
+.seek-wave i:nth-child(33) { height: 7px; }
+.seek-wave i:nth-child(34) { height: 10px; }
+.seek-wave i:nth-child(35) { height: 6px; }
+.seek-wave i:nth-child(36) { height: 14px; }
+.seek-wave i:nth-child(37) { height: 8px; }
+.seek-wave i:nth-child(38) { height: 12px; }
+.seek-wave i:nth-child(39) { height: 5px; }
+.seek-wave i:nth-child(40) { height: 9px; }
+
+.seek-wave i:nth-child(3n) {
+    animation-delay: -0.25s;
+}
+
+.seek-wave i:nth-child(4n) {
+    animation-delay: -0.45s;
+}
+
+.seek-wave i:nth-child(5n) {
+    animation-delay: -0.65s;
+}
+
+
+@keyframes seek-wave-breathe {
+
+    0% {
+        transform: scaleY(0.65);
+    }
+
+    100% {
+        transform: scaleY(1);
+    }
+
+}
+
+
+/* =========================================================
+   FLOWER THUMB
+   ========================================================= */
+
+.seek-flower {
     position: absolute;
 
-    top: -20%;
-    left: -20%;
+    right: -8px;
 
-    width: 140%;
-    height: 140%;
-
-    background:
-        repeating-linear-gradient(
-            115deg,
-            rgba(255, 246, 210, 0.45) 0px,
-            rgba(255, 246, 210, 0.45) 3px,
-            transparent 3px,
-            transparent 12px
-        );
-
-    animation: liquid-flow 1.4s linear infinite;
-
-    pointer-events: none;
-}
-
-@keyframes liquid-flow {
-    from {
-        background-position: 0 0;
-    }
-    to {
-        background-position: -30px 0;
-    }
-}
-
-/* Little bead riding the leading edge of the liquid */
-.progress::after {
-    content: "";
-
-    position: absolute;
-
-    right: -6px;
     top: 50%;
 
-    width: 13px;
-    height: 13px;
+    width: 25px;
+    height: 25px;
+
+    transform:
+        translateY(-50%);
+
+    background-image:
+        url('assets/decorations/heart-gem.png');
+
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+
+    image-rendering: pixelated;
+
+    filter:
+        drop-shadow(
+            0 2px 3px rgba(35, 0, 20, 0.55)
+        );
+
+    pointer-events: none;
+
+    transition:
+        transform 0.15s ease,
+        filter 0.15s ease;
+}
+
+
+/* Little flower glow while playing */
+
+.progress-bar:hover .seek-flower {
+
+    transform:
+        translateY(-50%)
+        scale(1.12);
+
+    filter:
+        brightness(1.12)
+        drop-shadow(
+            0 0 5px rgba(248, 157, 170, 0.42)
+        );
+}
+
+
+/* =========================================================
+   END DECORATIONS
+   ========================================================= */
+
+.seek-decoration {
+    position: absolute;
+
+    top: 50%;
+
+    width: 28px;
+    height: 28px;
 
     transform: translateY(-50%);
 
-    border-radius: 50%;
+    background-repeat: no-repeat;
+    background-size: contain;
+    background-position: center;
 
-    background:
-        radial-gradient(
-            circle at 35% 30%,
-            #fff6d8,
-            #f4b93f 55%,
-            #a8690f 100%
-        );
-
-    border: 1px solid rgba(110, 62, 8, 0.55);
-
-    box-shadow:
-        0 1px 2px rgba(0, 0, 0, 0.35);
+    image-rendering: pixelated;
 
     pointer-events: none;
+
+    opacity: 0.95;
+}
+
+
+/* Left flower */
+
+.seek-decoration-left {
+
+    left: -1px;
+
+    background-image:
+        url('assets/decorations/heart-gem.png');
+
+    transform:
+        translateY(-50%)
+        scaleX(-1);
+}
+
+
+/* Right flower */
+
+.seek-decoration-right {
+
+    right: -1px;
+
+
+}
+
+
+/* =========================================================
+   LITTLE SPARKLES
+   ========================================================= */
+
+   
+.progress-bar::before,
+.progress-bar::after {
+
+    content: "✦";
+
+    position: absolute;
+
+    color: #f7c87d;
+
+    font-size: 8px;
+
+    pointer-events: none;
+
+    animation:
+        seek-sparkle
+        1.8s
+        steps(2)
+        infinite;
+}
+
+
+.progress-bar::before {
+
+    left: 24%;
+
+    top: -1px;
+
+}
+
+
+.progress-bar::after {
+
+    left: 72%;
+
+    bottom: -1px;
+
+    animation-delay: -0.9s;
+
+}
+
+
+@keyframes seek-sparkle {
+
+    0%,
+    100% {
+        opacity: 0.25;
+        transform: scale(0.8);
+    }
+
+    50% {
+        opacity: 1;
+        transform: scale(1.2);
+    }
+
+}
+
+
+/* =========================================================
+   PLAYING STATE
+   ========================================================= */
+
+.album-art-container.is-playing
+~ .song-information
+~ .player-controls
+~ .progress-area
+.seek-wave i {
+
+    animation-play-state: running;
 }
 
 
@@ -3305,11 +3588,177 @@ body {
         min-width: 28px;
     }
 
-    .seek-tube {
-        height: 13px;
+    .seek-decoration {
+        width: 23px;
+        height: 23px;
     }
 
-    .progress {
-        height: 13px;
+    .seek-flower {
+        width: 21px;
+        height: 21px;
     }
+
+    .seek-wave {
+        bottom: 7px;
+        height: 13px;
+        gap: 1px;
+    }
+}
+/* =========================================================
+   ANIMATED SIDEBAR TURNTABLE
+   ========================================================= */
+
+.sidebar-record-player {
+    position: absolute;
+
+    left: 50%;
+    bottom: 4px;
+
+    width: min(98%, 260px);
+    aspect-ratio: 1 / 1;
+
+    transform: translateX(-50%);
+
+    overflow: visible;
+
+    pointer-events: none;
+}
+
+
+/* ---------------------------------------------------------
+   ALL TURNTABLE ASSETS
+   --------------------------------------------------------- */
+
+.sidebar-record-player img {
+    position: absolute;
+
+    display: block;
+
+    width: 100%;
+    height: 100%;
+
+    object-fit: contain;
+
+    image-rendering: pixelated;
+
+    max-width: none;
+    max-height: none;
+}
+
+
+/* =========================================================
+   TURNTABLE BASE
+   ========================================================= */
+
+.turntable-base {
+    z-index: 1;
+
+    inset: 0;
+
+    width: 100% !important;
+    height: 100% !important;
+}
+
+
+/* =========================================================
+   VINYL
+   ========================================================= */
+
+.turntable-vinyl {
+    z-index: 2;
+
+    width: 58% !important;
+    height: 58% !important;
+
+    left: 28%;
+    top: 32%;
+
+    transform-origin: center center;
+
+    animation-play-state: paused;
+}
+
+
+/* =========================================================
+   TONEARM
+   ========================================================= */
+
+.turntable-arm {
+    z-index: 3;
+
+    width: 34% !important;
+    height: 34% !important;
+
+    left: 21%;
+    top: 45%;
+
+    object-fit: contain;
+
+    transform-origin: 20% 20%;
+}
+
+
+/* =========================================================
+   KNOB
+   ========================================================= */
+
+.turntable-knob {
+    z-index: 4;
+
+    width: 15% !important;
+    height: 15% !important;
+
+    left: 32%;
+    top: 70%;
+
+    object-fit: contain;
+}
+
+/* =========================================================
+   PLAYING STATE
+   ========================================================= */
+
+.sidebar-record-player.is-playing .turntable-vinyl {
+    animation:
+        sidebar-vinyl-spin 3.2s linear infinite;
+}
+
+
+/* =========================================================
+   VINYL ROTATION
+   ========================================================= */
+
+@keyframes sidebar-vinyl-spin {
+
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
+
+}
+
+
+/* =========================================================
+   OPTIONAL TONEARM MOVEMENT
+   ========================================================= */
+
+.sidebar-record-player.is-playing .turntable-arm {
+    animation:
+        tonearm-playing 5s ease-in-out infinite alternate;
+}
+
+
+@keyframes tonearm-playing {
+
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(1deg);
+    }
+
 }
