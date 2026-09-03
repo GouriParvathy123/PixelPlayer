@@ -479,21 +479,137 @@ body {
     background: #704331;
 }
 
-.room-background {
+.room-scene-wrap {
     position: absolute;
 
     inset: 0;
 
+    z-index: 0;
+
+    overflow: hidden;
+}
+
+.room-scene {
+    /* Fixed at the artwork's native size (1536 × 1024). Every sprite
+       inside is positioned as a % of THIS box, so it never has to
+       change. The whole box is scaled + centered via a CSS transform
+       set in JS (renderer.js → sizeCabinScene), using a "cover" fit —
+       scaled up just enough to fully fill room-scene-wrap with no
+       gaps, cropping only the overflow. Because the image and every
+       sprite scale together as one unit, nothing can ever drift out
+       of alignment, at any window size. */
+    position: absolute;
+
+    top: 0;
+    left: 0;
+
+    width: 1536px;
+    height: 1024px;
+
+    transform-origin: top left;
+
+    overflow: hidden;
+}
+
+.room-scene-bg {
+    display: block;
+
     width: 100%;
     height: 100%;
 
-    background:
-        url("assets/background/background.png")
-        center center /
-        cover
-        no-repeat;
+    image-rendering: pixelated;
+}
 
-    z-index: 0;
+.cabin-sprite {
+    position: absolute;
+
+    display: block;
+
+    background-repeat: no-repeat;
+    background-size: 400% 100%;
+
+    image-rendering: pixelated;
+
+    pointer-events: none;
+}
+
+.cabin-girl {
+    left: 31.7%;
+    top: 46.2%;
+    width: 15.8%;
+    aspect-ratio: 480 / 620;
+
+    background-image: url('assets/cabin/girl-sprite.png');
+
+    animation: cabin-girl-loop 5.4s steps(1) infinite;
+}
+
+.cabin-cat {
+    left: 43.5%;
+    top: 66.1%;
+    width: 17%;
+    aspect-ratio: 520 / 360;
+
+    background-image: url('assets/cabin/cat-sprite.png');
+
+    animation: cabin-four-frames 3.8s steps(1) infinite;
+}
+
+.cabin-curtains {
+    left: 43.5%;
+    top: 17.8%;
+    width: 25%;
+    aspect-ratio: 520 / 640;
+
+    background-image: url('assets/cabin/curtains-sprite.png');
+
+    animation: cabin-four-frames 7s steps(1) infinite;
+}
+
+.cabin-fireplace {
+    left: 9.7%;
+    top: 59.6%;
+    width: 9%;
+    aspect-ratio: 200 / 180;
+
+    background-image: url('assets/cabin/fireplace-fire-sprite.png');
+
+    animation: cabin-four-frames 0.62s steps(1) infinite;
+
+    mix-blend-mode: screen;
+}
+
+.cabin-lantern {
+    width: 3.1%;
+    aspect-ratio: 80 / 90;
+
+    background-image: url('assets/cabin/lantern-flame-sprite.png');
+
+    animation: cabin-four-frames 0.48s steps(1) infinite;
+
+    mix-blend-mode: screen;
+}
+
+.lantern-wall         { left: 3.25%;  top: 34.3%; }
+.lantern-shelf        { left: 83.75%; top: 21.8%; animation-delay: -0.19s; }
+.lantern-window-left  { left: 53.1%;  top: 46.1%; animation-delay: -0.31s; }
+.lantern-window-right { left: 61.15%; top: 46.8%; animation-delay: -0.08s; }
+.lantern-table        { left: 36.1%;  top: 72.1%; animation-delay: -0.26s; }
+.lantern-front        { left: 15.1%;  top: 85.5%; animation-delay: -0.13s; }
+.lantern-cabinet      { left: 92.8%;  top: 64.3%; animation-delay: -0.38s; }
+
+@keyframes cabin-four-frames {
+    0%, 24.99%  { background-position: 0 0; }
+    25%, 49.99% { background-position: 33.333333% 0; }
+    50%, 74.99% { background-position: 66.666667% 0; }
+    75%, 100%   { background-position: 100% 0; }
+}
+
+@keyframes cabin-girl-loop {
+    0%, 42%   { background-position: 0 0; }
+    43%, 86%  { background-position: 33.333333% 0; }
+    87%, 91%  { background-position: 66.666667% 0; }
+    92%, 100% { background-position: 100% 0; }
 }
 
 .ambient-glow {
@@ -1870,6 +1986,12 @@ body {
 
     transform: translateX(0) rotate(0deg);
     transform-origin: center;
+}
+
+/* Spin when playing — must come after the second .album-vinyl
+   block so this rule wins the cascade. */
+.album-art-container.is-playing .album-vinyl {
+    animation: vinyl-spin 5s linear infinite;
 }
 
 /* Album artwork sits above the record. */
