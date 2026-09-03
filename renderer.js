@@ -1953,6 +1953,67 @@ spawnDustMotes();
 
 
 /* =========================================================
+   CABIN SCENE SIZING
+   ========================================================= */
+
+/*
+ * background-clean.png is a fixed 1536 × 1024 piece of art, and
+ * every girl/cat/curtains/fireplace/lantern sprite is positioned
+ * as a % of that same 1536 × 1024 box — so the box itself never
+ * resizes. Instead we scale + center the WHOLE box with a CSS
+ * transform, "cover" style: scaled up just enough that it fully
+ * fills the available space with no gaps, cropping only the
+ * excess. Since the art and every sprite are children of the same
+ * box, they all scale together and can never drift apart.
+ */
+
+const roomSceneWrap =
+  document.getElementById('room-scene-wrap');
+
+const roomScene =
+  document.getElementById('room-scene');
+
+const CABIN_SCENE_NATIVE_WIDTH = 1536;
+const CABIN_SCENE_NATIVE_HEIGHT = 1024;
+
+function sizeCabinScene() {
+
+  if (!roomSceneWrap || !roomScene) return;
+
+  const availableWidth =
+    roomSceneWrap.clientWidth;
+
+  const availableHeight =
+    roomSceneWrap.clientHeight;
+
+  if (!availableWidth || !availableHeight) return;
+
+  const scale = Math.max(
+    availableWidth / CABIN_SCENE_NATIVE_WIDTH,
+    availableHeight / CABIN_SCENE_NATIVE_HEIGHT
+  );
+
+  const scaledWidth = CABIN_SCENE_NATIVE_WIDTH * scale;
+  const scaledHeight = CABIN_SCENE_NATIVE_HEIGHT * scale;
+
+  const offsetX = (availableWidth - scaledWidth) / 2;
+  const offsetY = (availableHeight - scaledHeight) / 2;
+
+  roomScene.style.transform =
+    `translate(${offsetX}px, ${offsetY}px) scale(${scale})`;
+
+}
+
+window.addEventListener('resize', sizeCabinScene);
+
+if (window.ResizeObserver && roomSceneWrap) {
+  new ResizeObserver(sizeCabinScene).observe(roomSceneWrap);
+}
+
+sizeCabinScene();
+
+
+/* =========================================================
    INITIAL IDLE STATE
    ========================================================= */
 
