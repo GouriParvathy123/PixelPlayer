@@ -71,6 +71,25 @@ body {
 
 
 /* =========================================================
+   VINE GARLAND
+   ========================================================= */
+
+.vine-garland {
+    display: block;
+
+    width: 110%;
+    height: 60px;
+
+    margin-bottom: -14px;
+
+    object-fit: fill;
+    object-position:  top;
+
+    pointer-events: none;
+}
+
+
+/* =========================================================
    LOGO
    ========================================================= */
 
@@ -120,7 +139,7 @@ body {
 
     flex-direction: column;
 
-    gap: 3px;
+    gap: 8px;
 
     width: 100%;
 }
@@ -143,13 +162,11 @@ body {
 
     padding: 5px 8px;
 
-    border: 1px solid transparent;
-
-    border-bottom: 1px solid #71305b;
+    border: 1px solid rgba(232, 165, 71, 0.28);
 
     border-radius: 12px;
 
-    background: transparent;
+    background: rgba(255, 220, 170, 0.035);
 
     color: #ffe5c4;
 
@@ -329,36 +346,109 @@ body {
    SIDEBAR RECORD PLAYER
    ========================================================= */
 
+/* .sidebar-record-player layout is fully defined
+   in the ANIMATED SIDEBAR TURNTABLE block below.
+   This placeholder keeps specificity neutral. */
 .sidebar-record-player {
     position: absolute;
+    pointer-events: none;
+}
 
-    left: 0;
-    right: 0;
+.turntable-glow {
+    position: absolute;
+
+    left: 50%;
     bottom: 4px;
 
-    display: flex;
+    width: 200px;
+    height: 90px;
 
-    justify-content: center;
+    transform: translateX(-50%);
 
-    align-items: flex-end;
+    background: radial-gradient(
+        ellipse at center,
+        rgba(255, 190, 120, 0.16) 0%,
+        rgba(255, 150, 100, 0.06) 55%,
+        transparent 75%
+    );
+
+    pointer-events: none;
+    z-index: 0;
+}
+
+/* sidebar-record-player img sizing is handled per-layer
+   in the ANIMATED SIDEBAR TURNTABLE block below */
+.sidebar-record-player img {
+    display: block;
+    image-rendering: pixelated;
+    object-fit: contain;
+}
+
+/* =========================================================
+   FLOATING MUSIC NOTES
+   ========================================================= */
+
+.note-float {
+    position: absolute;
+
+    bottom: 220px;
+
+    font-family: "Bitcount Grid Single", "VT323", monospace;
+    font-size: 18px;
+
+    color: #ffd36e;
+
+    text-shadow: 0 0 6px rgba(255, 210, 120, 0.6);
+
+    opacity: 0;
+
+    z-index: 10;
 
     pointer-events: none;
 
-    overflow: hidden;
+    animation: note-drift 4.5s ease-in infinite;
 }
 
-.sidebar-record-player img {
-    display: block;
 
-    width: min(88%, 225px);
+.note-1 {
+    left: 20%;
+    animation-delay: 0s;
+}
 
-    max-height: 235px;
 
-    height: auto;
+.note-2 {
+    left: 50%;
+    font-size: 15px;
+    animation-delay: 1.6s;
+}
 
-    object-fit: contain;
 
-    image-rendering: pixelated;
+.note-3 {
+    left: 75%;
+    animation-delay: 3s;
+}
+
+
+@keyframes note-drift {
+
+    0% {
+        transform: translateY(0) rotate(0deg);
+        opacity: 0;
+    }
+
+    15% {
+        opacity: 1;
+    }
+
+    80% {
+        opacity: 0.7;
+    }
+
+    100% {
+        transform: translateY(-70px) rotate(12deg);
+        opacity: 0;
+    }
+
 }
 
 
@@ -651,7 +741,7 @@ body {
 
     font-size: 15px;
 
-    color: #ffe0a4;
+    color:  #ffe0a4;
 }
 
 .current-playlist h2 img {
@@ -923,6 +1013,49 @@ body {
 
 .empty span {
     max-width: 175px;
+}
+
+.empty-action {
+    margin-top: 6px;
+
+    padding: 10px 18px;
+
+    font-family: "Bitcount Grid Single", "VT323", monospace;
+    font-size: 13px;
+    letter-spacing: 0.5px;
+    color: #ffe6b7;
+
+    background:
+        linear-gradient(
+            135deg,
+            rgba(246, 130, 130, 0.30),
+            rgba(112, 38, 83, 0.55) 55%,
+            rgba(61, 14, 55, 0.65)
+        );
+
+    border: 1px solid rgba(240, 196, 143, 0.85);
+    border-radius: 14px;
+
+    box-shadow:
+        0 4px 12px rgba(25, 0, 18, 0.32),
+        inset 0 1px 0 rgba(255, 238, 204, 0.30),
+        0 0 10px rgba(255, 190, 120, 0.20);
+
+    cursor: pointer;
+
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.empty-action:hover {
+    transform: translateY(-1px);
+    box-shadow:
+        0 6px 14px rgba(25, 0, 18, 0.36),
+        inset 0 1px 0 rgba(255, 238, 204, 0.30),
+        0 0 14px rgba(255, 190, 120, 0.32);
+}
+
+.empty-action:active {
+    transform: translateY(0);
 }
 
 /* =========================================================
@@ -1581,8 +1714,9 @@ body {
         height: 29px;
     }
 
+    /* sidebar-record-player still shown on mobile, just smaller */
     .sidebar-record-player {
-        display: none;
+        width: min(88%, 200px);
     }
 
     .current-playlist,
@@ -1857,6 +1991,10 @@ body {
 
     object-fit: contain;
     image-rendering: pixelated;
+
+    /* lift icons off the dark bar a touch so they don't
+       all blend into the same muted gold-on-purple */
+    filter: brightness(1.12) drop-shadow(0 1px 2px rgba(0,0,0,0.45));
 }
 
 .player-button:hover {
@@ -1868,8 +2006,21 @@ body {
 .play-button {
     width: 56px;
     height: 56px;
-    background: transparent;
+    background:
+        radial-gradient(
+            circle,
+            rgba(255, 190, 120, 0.30) 0%,
+            rgba(255, 190, 120, 0.10) 55%,
+            transparent 75%
+        );
+    border: 1px solid rgba(240, 196, 143, 0.55);
     border-radius: 50%;
+    box-shadow: 0 0 12px rgba(255, 180, 110, 0.28);
+}
+
+.player-button.play-button img,
+.play-button img {
+    filter: brightness(1.25) drop-shadow(0 1px 3px rgba(0,0,0,0.5));
 }
 
 /* Time bar goes underneath the title/controls instead of
@@ -3518,5 +3669,207 @@ body {
         bottom: 7px;
         height: 13px;
         gap: 1px;
+    }
+
+}
+
+
+/* =========================================================
+   ANIMATED SIDEBAR TURNTABLE — new layered version
+   Uses the supplied record-player-base, angled vinyl sprite
+   (8 frames, steps animation), tonearm pivot, and LED dot.
+
+   Container is 3:2 — matches the base PNG (1536×1024).
+   All layer positions are % of that container, taken
+   directly from the reference demo's styles.css.
+   ========================================================= */
+
+.sidebar-record-player {
+    position: absolute;
+
+    left: 50%;
+    bottom: 4px;
+
+    width: min(96%, 252px);
+    aspect-ratio: 3 / 2;
+
+    transform: translateX(-50%);
+
+    pointer-events: none;
+    overflow: visible;
+
+    animation: turntable-float 5.5s ease-in-out infinite;
+    filter: drop-shadow(0 18px 22px rgba(0,0,0,0.55));
+}
+
+@keyframes turntable-float {
+    0%   { transform: translateX(-50%) translateY(0px); }
+    50%  { transform: translateX(-50%) translateY(-5px); }
+    100% { transform: translateX(-50%) translateY(0px); }
+}
+
+
+/* ---------------------------------------------------------
+   RESET — override any earlier catch-all that forced
+   every img inside to width/height 100%.
+   Each layer below sets its own explicit size.
+   --------------------------------------------------------- */
+
+.sidebar-record-player img,
+.turntable-vinyl-wrap,
+.turntable-vinyl-sprite,
+.turntable-indicator {
+    position: absolute;
+    display: block;
+    pointer-events: none;
+    user-select: none;
+    /* NO width/height here — each layer controls its own */
+}
+
+
+/* =========================================================
+   LAYER 1 — BASE (static, fills the full 3:2 wrapper)
+   ========================================================= */
+
+.turntable-base {
+    inset: 0;
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: contain;
+    image-rendering: pixelated;
+    z-index: 1;
+}
+
+
+/* =========================================================
+   LAYER 2 — ANGLED VINYL SPRITE
+   Position from reference demo (record-wrap):
+     left: 36.5%  top: 45.2%  width: 29.2%
+   Sprite frames are 768×480 = 8:5 aspect ratio.
+   The frames are already drawn at the correct viewing angle,
+   so we do NOT need scaleY — just set the right aspect ratio.
+   ========================================================= */
+
+.turntable-vinyl-wrap {
+    left: 36.5%;
+    top: 45.2%;
+    width: 29.2%;
+    aspect-ratio: 8 / 5;   /* each frame is 768×480 */
+
+    z-index: 2;
+    overflow: hidden;
+
+    /* slight rotation to match platter tilt in base art */
+    transform: rotate(-1.5deg);
+    transform-origin: center;
+}
+
+.turntable-vinyl-sprite {
+    width: 100%;
+    height: 100%;
+
+    background-image: url('assets/turntable/vinyl-sprite-vertical.png');
+    background-repeat: no-repeat;
+    /* 8 frames stacked vertically → each is 1/8 of total height */
+    background-size: 100% 800%;
+    background-position: 0 0;
+
+    image-rendering: pixelated;
+
+    /* Always spinning, regardless of playback state */
+    animation: vinyl-frames 3200ms steps(7) infinite;
+}
+
+@keyframes vinyl-frames {
+    to { background-position: 0 100%; }
+}
+
+
+/* =========================================================
+   LAYER 3 — TONEARM
+   Position from reference demo:
+     left: 25.5%  top: 48.5%  width: 32%
+     transform-origin: 14% 42%  (pivot at needle head)
+   ========================================================= */
+
+.turntable-arm {
+    left: 25.5% !important;
+    top: 48.5% !important;
+    width: 32% !important;
+    height: auto !important;
+
+    object-fit: contain;
+    image-rendering: pixelated;
+
+    transform-origin: 14% 42%;
+    transform: rotate(-2deg);
+
+    z-index: 3;
+
+    transition: transform 0.6s ease-in-out;
+}
+
+
+/* =========================================================
+   LAYER 4 — LED INDICATOR DOT
+   Position from reference demo:
+     left: 34.35%  top: 66.25%  width: 1.1%
+   ========================================================= */
+
+.turntable-indicator {
+    left: 34.35%;
+    top: 66.25%;
+    width: 1.1%;
+    aspect-ratio: 1;
+
+    border-radius: 50%;
+    background: #ff3b4f;
+    box-shadow: 0 0 4px #ff3b4f, 0 0 10px #ff8b53;
+
+    z-index: 4;
+
+    animation: turntable-led-pulse 1.2s ease-in-out infinite;
+}
+
+@keyframes turntable-led-pulse {
+    50% {
+        opacity: 0.4;
+        transform: scale(0.72);
+        box-shadow: 0 0 2px #ff3b4f;
+    }
+}
+
+
+/* =========================================================
+   PLAYING STATE — .is-playing added by renderer.js
+   ========================================================= */
+
+.sidebar-record-player.is-playing .turntable-vinyl-sprite {
+    animation-play-state: running;
+}
+
+.sidebar-record-player.is-playing .turntable-arm {
+    animation: tonearm-drift 8s ease-in-out infinite alternate;
+}
+
+@keyframes tonearm-drift {
+    from { transform: rotate(-2deg); }
+    to   { transform: rotate(2.5deg); }
+}
+
+
+/* =========================================================
+   REDUCED MOTION
+   ========================================================= */
+
+@media (prefers-reduced-motion: reduce) {
+    .sidebar-record-player,
+    .turntable-vinyl-sprite,
+    .turntable-arm,
+    .turntable-indicator {
+        animation: none !important;
+    }
+    .turntable-arm {
+        transform: rotate(0deg);
     }
 }
