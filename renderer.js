@@ -5,6 +5,7 @@ const nowPlayingTitle = document.getElementById('now-playing-title');
 const nowPlayingArtist = document.getElementById('now-playing-artist');
 const nowPlayingArt = document.getElementById('now-playing-art');
 const albumArtContainer = document.querySelector('.album-art-container');
+const sidebarTurntable = document.getElementById('sidebar-turntable');
 const playButton = document.getElementById('play-btn');
 const progress = document.getElementById('progress');
 const progressBar = document.querySelector('.progress-bar');
@@ -971,6 +972,10 @@ audio.addEventListener(
 
     }
 
+    if (sidebarTurntable) {
+      sidebarTurntable.classList.add('is-playing');
+    }
+
 
     playButton.innerHTML =
       '<img src="assets/player/pause.png" alt="Pause">';
@@ -1007,6 +1012,10 @@ audio.addEventListener(
 
     }
 
+    if (sidebarTurntable) {
+      sidebarTurntable.classList.remove('is-playing');
+    }
+
 
     playButton.innerHTML =
       '<img src="assets/player/play.png" alt="Play">';
@@ -1041,6 +1050,10 @@ audio.addEventListener(
         'is-playing'
       );
 
+    }
+
+    if (sidebarTurntable) {
+      sidebarTurntable.classList.remove('is-playing');
     }
 
 
