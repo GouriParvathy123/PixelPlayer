@@ -1957,14 +1957,14 @@ spawnDustMotes();
    ========================================================= */
 
 /*
- * background-clean.png is a fixed 1536 × 1024 piece of art, and
- * every girl/cat/curtains/fireplace/lantern sprite is positioned
- * as a % of that same 1536 × 1024 box — so the box itself never
- * resizes. Instead we scale + center the WHOLE box with a CSS
- * transform, "cover" style: scaled up just enough that it fully
- * fills the available space with no gaps, cropping only the
- * excess. Since the art and every sprite are children of the same
- * box, they all scale together and can never drift apart.
+ * background-clean.png is a fixed 1672 × 941 piece of art, and
+ * every girl/pet/curtains/fireplace/lantern/lights sprite is
+ * positioned as a % of that same 1672 × 941 box — so the box
+ * itself never resizes. Instead we scale + center the WHOLE box
+ * with a CSS transform, "cover" style: scaled up just enough that
+ * it fully fills the available space with no gaps, cropping only
+ * the excess. Since the art and every sprite are children of the
+ * same box, they all scale together and can never drift apart.
  */
 
 const roomSceneWrap =
@@ -1973,8 +1973,8 @@ const roomSceneWrap =
 const roomScene =
   document.getElementById('room-scene');
 
-const CABIN_SCENE_NATIVE_WIDTH = 1536;
-const CABIN_SCENE_NATIVE_HEIGHT = 1024;
+const CABIN_SCENE_NATIVE_WIDTH = 1672;
+const CABIN_SCENE_NATIVE_HEIGHT = 941;
 
 function sizeCabinScene() {
 
@@ -2011,6 +2011,69 @@ if (window.ResizeObserver && roomSceneWrap) {
 }
 
 sizeCabinScene();
+
+
+/* =========================================================
+   CABIN CALIBRATION HELPER  (Ctrl+Shift+K to toggle)
+   Click a sprite, nudge it with arrow keys (0.1%, Shift = 1%),
+   then copy the left/top values it prints into style.css.
+   ========================================================= */
+(function () {
+  let selected = null;
+  let readout = null;
+
+  function show() {
+    if (!selected || !readout) return;
+    readout.textContent =
+      `${selected.className.replace('cabin-sprite', '').replace('calib-selected', '').trim()}  ` +
+      `left: ${selected.style.left || getComputedStyle(selected).left}; ` +
+      `top: ${selected.style.top || getComputedStyle(selected).top};`;
+    console.log(readout.textContent);
+  }
+
+  function toPercent(el) {
+    const scene = document.getElementById('room-scene');
+    const w = scene.offsetWidth, h = scene.offsetHeight;
+    el.style.left = (el.offsetLeft / w * 100).toFixed(1) + '%';
+    el.style.top = (el.offsetTop / h * 100).toFixed(1) + '%';
+  }
+
+  document.addEventListener('keydown', (e) => {
+    if (e.ctrlKey && e.shiftKey && e.key.toLowerCase() === 'k') {
+      const on = document.body.classList.toggle('calibrating');
+      if (on) {
+        readout = document.createElement('div');
+        readout.id = 'calib-readout';
+        readout.textContent = 'Calibration: click a sprite, then use arrow keys';
+        document.body.appendChild(readout);
+      } else if (readout) {
+        readout.remove(); readout = null;
+        if (selected) selected.classList.remove('calib-selected');
+        selected = null;
+      }
+      return;
+    }
+    if (!document.body.classList.contains('calibrating') || !selected) return;
+    const step = e.shiftKey ? 1 : 0.1;
+    const d = { ArrowLeft: [-step, 0], ArrowRight: [step, 0], ArrowUp: [0, -step], ArrowDown: [0, step] }[e.key];
+    if (!d) return;
+    e.preventDefault();
+    if (!selected.style.left) toPercent(selected);
+    selected.style.left = (parseFloat(selected.style.left) + d[0]).toFixed(1) + '%';
+    selected.style.top = (parseFloat(selected.style.top) + d[1]).toFixed(1) + '%';
+    show();
+  });
+
+  document.addEventListener('click', (e) => {
+    if (!document.body.classList.contains('calibrating')) return;
+    const el = e.target.closest && e.target.closest('.cabin-sprite');
+    if (!el) return;
+    if (selected) selected.classList.remove('calib-selected');
+    selected = el;
+    selected.classList.add('calib-selected');
+    show();
+  });
+})();
 
 
 /* =========================================================
