@@ -629,7 +629,7 @@ body {
 
 .cabin-beanbag {
     z-index: 3;
-    left: 55%;
+    left: 53%;
     top: 53.1%;
     width: 17%;
     /* Static prop, not a sprite atlas — real image is 1478x1016. */
