@@ -12,8 +12,7 @@
 
 html,
 body {
-    width: fit-content;
-    max-width: 100%;
+    width: 100%;
     height: 100%;
     overflow: hidden;
 }
@@ -503,8 +502,8 @@ body {
     top: 0;
     left: 0;
 
-    width: 1536px;
-    height: 1024px;
+    width: 1672px;
+    height: 941px;
 
     transform-origin: top left;
 
@@ -526,7 +525,8 @@ body {
     display: block;
 
     background-repeat: no-repeat;
-    background-size: 400% 100%;
+    /* Most new sprites are a 4x2 atlas (8 frames) */
+    background-size: 400% 200%;
 
     image-rendering: pixelated;
 
@@ -534,82 +534,192 @@ body {
 }
 
 .cabin-girl {
-    left: 31.7%;
-    top: 46.2%;
-    width: 15.8%;
-    aspect-ratio: 480 / 620;
+    z-index: 3;
+    left: 37%;
+    top: 50.8%;
+    width: 12.9%;
+    /* Real frame size is 320x420 (1280x1680 sheet / 4x4 grid).
+       top is re-anchored so her feet stay planted on the rug
+       at this slightly larger size. */
+    aspect-ratio: 16 / 21;
 
     background-image: url('assets/cabin/girl-sprite.png');
+    background-size: 400% 400%;
 
-    animation: cabin-girl-loop 5.4s steps(1) infinite;
+    animation: cabin-sixteen-frames 6s steps(1) infinite;
 }
 
-.cabin-cat {
-    left: 43.5%;
-    top: 66.1%;
-    width: 17%;
-    aspect-ratio: 520 / 360;
+.cabin-pet {
+    z-index: 3;
+    left: 48.3%;
+    top: 63.5%;
+    width: 10.3%;
+    aspect-ratio: 384 / 512;
 
-    background-image: url('assets/cabin/cat-sprite.png');
+    background-image: url('assets/cabin/pet-corgi-sprite.png');
 
-    animation: cabin-four-frames 3.8s steps(1) infinite;
+    animation: cabin-eight-frames 4.6s steps(1) infinite;
 }
 
 .cabin-curtains {
-    left: 43.5%;
-    top: 17.8%;
-    width: 25%;
-    aspect-ratio: 520 / 640;
+    z-index: 2;
+    left: 40.9%;
+    top: 13.2%;
+    width: 34%;
+    /* Real frame size is 336x312 (1344x1248 sheet / 4x4 grid).
+       Widened + repositioned to span the full window frame —
+       lantern-window-left/right (33% / 57%) mark the window's
+       interior, so the rod needs to run past both sides of that. */
+    aspect-ratio: 14 / 13;
 
     background-image: url('assets/cabin/curtains-sprite.png');
+    /* curtains-sprite.png is also a 4x4 atlas (16 frames). */
+    background-size: 400% 400%;
 
-    animation: cabin-four-frames 7s steps(1) infinite;
+    animation: cabin-sixteen-frames 8s steps(1) infinite;
+}
+
+.cabin-lights {
+    z-index: 1;
+    width: 16%;
+    aspect-ratio: 1 / 1;
+
+    background-image: url('assets/cabin/string-lights-sprite.png');
+
+    animation: cabin-eight-frames 4s steps(1) infinite;
+
+    mix-blend-mode: screen;
+}
+
+/* Split into two shorter runs — one over the bunk bed, one along
+   the window side — instead of one wide strand stretched across
+   the open ladder gap between them. */
+.lights-bunk {
+    /* removed by request; delete the matching <span> in index.html too if not needed */
+    display: none;
+}
+
+.lights-window {
+    /* One swag across the whole window, drooping in the middle,
+       behind the curtains. Stretched wider than the default
+       16% square so it spans the full window. */
+    left: 44.1%;
+    top: 3.1%;
+    width: 26.4%;
+    aspect-ratio: 1.38 / 1;
+
+    animation-delay: -1.6s;
 }
 
 .cabin-fireplace {
-    left: 9.7%;
+    z-index: 3;
+    left: 10.5%;
     top: 59.6%;
     width: 9%;
-    aspect-ratio: 200 / 180;
+    aspect-ratio: 1 / 1;
 
     background-image: url('assets/cabin/fireplace-fire-sprite.png');
+    /* 4x3 atlas (12 frames) instead of the shared 4x2 default */
+    background-size: 400% 300%;
 
-    animation: cabin-four-frames 0.62s steps(1) infinite;
+    animation: cabin-fire-frames 1.1s steps(1) infinite;
 
     mix-blend-mode: screen;
+}
+
+.cabin-beanbag {
+    z-index: 3;
+    left: 55%;
+    top: 53.1%;
+    width: 17%;
+    /* Static prop, not a sprite atlas — real image is 1478x1016. */
+    aspect-ratio: 1478 / 1016;
+
+    background-image: url('assets/cabin/bean-bag.png');
+    background-size: 100% 100%;
+
+    animation: none;
 }
 
 .cabin-lantern {
-    width: 3.1%;
-    aspect-ratio: 80 / 90;
+    z-index: 3;
+    width: 2%;
+    aspect-ratio: 1 / 1;
 
     background-image: url('assets/cabin/lantern-flame-sprite.png');
 
-    animation: cabin-four-frames 0.48s steps(1) infinite;
+    animation: cabin-eight-frames 0.9s steps(1) infinite;
 
     mix-blend-mode: screen;
 }
 
-.lantern-wall         { left: 3.25%;  top: 34.3%; }
-.lantern-shelf        { left: 83.75%; top: 21.8%; animation-delay: -0.19s; }
-.lantern-window-left  { left: 53.1%;  top: 46.1%; animation-delay: -0.31s; }
-.lantern-window-right { left: 61.15%; top: 46.8%; animation-delay: -0.08s; }
-.lantern-table        { left: 36.1%;  top: 72.1%; animation-delay: -0.26s; }
-.lantern-front        { left: 15.1%;  top: 85.5%; animation-delay: -0.13s; }
-.lantern-cabinet      { left: 92.8%;  top: 64.3%; animation-delay: -0.38s; }
+/* Class names are legacy; positions now match the lanterns in
+   background-clean.png:
+   - lantern-mantle        -> lantern on the bookshelf
+   - lantern-window-left   -> lantern on the left wall
+   - lantern-window-right  -> lantern on the floor by the girl
+   - lantern-pendant       -> no lantern in the art, so hidden      */
+.lantern-pendant       { display: none; }
+.lantern-mantle        { left: 16.6%; top: 46.6%; animation-delay: -0.3s; }
+.lantern-window-left   { left: 1.9%;  top: 38.1%; animation-delay: -0.5s; }
+.lantern-window-right  { left: 34.9%; top: 78.8%; animation-delay: -0.15s; }
 
-@keyframes cabin-four-frames {
-    0%, 24.99%  { background-position: 0 0; }
-    25%, 49.99% { background-position: 33.333333% 0; }
-    50%, 74.99% { background-position: 66.666667% 0; }
-    75%, 100%   { background-position: 100% 0; }
+/* Calibration mode (Ctrl+Shift+K) */
+body.calibrating .cabin-sprite { pointer-events: auto; cursor: pointer; outline: 1px dashed rgba(255,255,255,.5); }
+body.calibrating .cabin-sprite.calib-selected { outline: 2px solid #0ff; }
+#calib-readout { position: fixed; left: 8px; bottom: 8px; z-index: 9999; padding: 6px 10px;
+    background: rgba(0,0,0,.8); color: #0ff; font: 12px monospace; border-radius: 6px; pointer-events: none; }
+
+/*
+   Some atlases (girl, curtains) are a 4x4 grid — 16 frames,
+   not the 4x2 / 8-frame layout cabin-eight-frames assumes.
+   Using cabin-eight-frames on a 4-row sheet only ever shows
+   the top 2 rows, squashed into the frame window — which is
+   why the girl looked doubled and the curtains looked frozen.
+*/
+@keyframes cabin-sixteen-frames {
+    0%,     6.24%  { background-position: 0% 0%; }
+    6.25%,  12.49% { background-position: 33.3333% 0%; }
+    12.5%,  18.74% { background-position: 66.6667% 0%; }
+    18.75%, 24.99% { background-position: 100% 0%; }
+    25%,    31.24% { background-position: 0% 33.3333%; }
+    31.25%, 37.49% { background-position: 33.3333% 33.3333%; }
+    37.5%,  43.74% { background-position: 66.6667% 33.3333%; }
+    43.75%, 49.99% { background-position: 100% 33.3333%; }
+    50%,    56.24% { background-position: 0% 66.6667%; }
+    56.25%, 62.49% { background-position: 33.3333% 66.6667%; }
+    62.5%,  68.74% { background-position: 66.6667% 66.6667%; }
+    68.75%, 74.99% { background-position: 100% 66.6667%; }
+    75%,    81.24% { background-position: 0% 100%; }
+    81.25%, 87.49% { background-position: 33.3333% 100%; }
+    87.5%,  93.74% { background-position: 66.6667% 100%; }
+    93.75%, 100%   { background-position: 100% 100%; }
 }
 
-@keyframes cabin-girl-loop {
-    0%, 42%   { background-position: 0 0; }
-    43%, 86%  { background-position: 33.333333% 0; }
-    87%, 91%  { background-position: 66.666667% 0; }
-    92%, 100% { background-position: 100% 0; }
+@keyframes cabin-eight-frames {
+    0%,    12.49% { background-position: 0% 0%; }
+    12.5%, 24.99% { background-position: 33.3333% 0%; }
+    25%,   37.49% { background-position: 66.6667% 0%; }
+    37.5%, 49.99% { background-position: 100% 0%; }
+    50%,   62.49% { background-position: 0% 100%; }
+    62.5%, 74.99% { background-position: 33.3333% 100%; }
+    75%,   87.49% { background-position: 66.6667% 100%; }
+    87.5%, 100%   { background-position: 100% 100%; }
+}
+
+@keyframes cabin-fire-frames {
+    0%,     8.32%  { background-position: 0% 0%; }
+    8.33%,  16.65% { background-position: 33.3333% 0%; }
+    16.66%, 24.99% { background-position: 66.6667% 0%; }
+    25%,    33.32% { background-position: 100% 0%; }
+    33.33%, 41.65% { background-position: 0% 50%; }
+    41.66%, 49.99% { background-position: 33.3333% 50%; }
+    50%,    58.32% { background-position: 66.6667% 50%; }
+    58.33%, 66.65% { background-position: 100% 50%; }
+    66.66%, 74.99% { background-position: 0% 100%; }
+    75%,    83.32% { background-position: 33.3333% 100%; }
+    83.33%, 91.65% { background-position: 66.6667% 100%; }
+    91.66%, 100%   { background-position: 100% 100%; }
 }
 
 .ambient-glow {
@@ -1175,547 +1285,6 @@ body {
 }
 
 /* =========================================================
-   FINAL MUSIC PLAYER FIX
-   Matches the reference layout
-   ========================================================= */
-
-.player-panel {
-    position: absolute;
-
-    left: 16px;
-    right: 20px;
-    bottom: 10px;
-    height: 170px;
-    min-height: 170px;
-
-    display: grid;
-
-    /*
-        COLUMN 1 = album/vinyl
-        COLUMN 2 = song information
-        COLUMN 3 = controls
-    */
-    grid-template-columns: 170px minmax(0, 1fr) auto;
-
-    /*
-        ROW 1 = song information + controls
-        ROW 2 = progress
-    */
-    grid-template-rows: 1fr;
-
-    column-gap: 12px;
-    row-gap: 8px;
-
-    padding: 12px 12px 12px 12px;
-
-    background: rgba(65, 9, 53, 0.94);
-
-    border: 1px solid #671c4d;
-    border-radius: 20px;
-
-    backdrop-filter: blur(5px);
-
-    overflow: visible;
-
-    /*
-        Prevent the grid from expanding because
-        of the oversized album artwork.
-    */
-    min-width: 0;
-}
-
-
-/* =========================================================
-   ALBUM ART + VINYL
-   ========================================================= */
-
-.album-art-container {
-    grid-column: 1;
-    grid-row: 1;
-
-    position: relative;
-    z-index: 5;
-
-    width: 160px;
-    height: 160px;
-
-    margin: 0;
-
-    overflow: visible;
-
-    border: 2px solid #270b2c;
-    border-radius: 16px;
-
-    background: #25051f;
-}
-
-
-/* Vinyl sits BEHIND the album artwork */
-
-.album-vinyl {
-    position: absolute;
-
-    z-index: 0;
-
-    top: 4px;
-    left: 58%;
-
-    width: 108%;
-    height: 96%;
-
-    object-fit: contain;
-
-    image-rendering: pixelated;
-
-    transform: translateX(0) rotate(0deg);
-
-    transform-origin: center;
-}
-
-
-/* Album image sits ON TOP of vinyl */
-
-#now-playing-art {
-    position: relative;
-
-    z-index: 2;
-
-    display: block;
-
-    width: 100%;
-    height: 100%;
-
-    object-fit: cover;
-
-    border-radius: 13px;
-
-    image-rendering: pixelated;
-}
-
-
-/* Vinyl animation */
-
-.album-art-container.is-playing .album-vinyl {
-    animation: vinyl-spin 5s linear infinite;
-}
-
-
-/* =========================================================
-   SONG INFORMATION
-   ========================================================= */
-
-.song-information {
-    grid-column: 2;
-    grid-row: 1;
-
-    align-self: flex-start;
-
-    position: relative;
-    z-index: 4;
-
-    min-width: 0;
-    width: 100%;
-    max-width: 100%;
-    height: auto;
-
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-start;
-
-    padding: 2px 0 0 0;
-
-    background: transparent;
-
-    border: none;
-
-    overflow: hidden;
-}
-
-
-.song-title {
-    display: block;
-
-    width: 100%;
-
-    overflow: hidden;
-
-    text-overflow: ellipsis;
-
-    white-space: nowrap;
-
-    color: #ffe5bb;
-
-    font-family: 'Bitcount Grid Single', 'VT323', monospace;
-
-    font-size: 16px;
-
-    font-weight: 700;
-}
-
-
-.song-artist {
-    margin-top: 4px;
-
-    color: #efb78f;
-
-    font-family: 'Bitcount Grid Single', 'VT323', monospace;
-
-    font-size: 13px;
-
-    white-space: nowrap;
-
-    overflow: hidden;
-
-    text-overflow: ellipsis;
-}
-
-
-/* =========================================================
-   PLAYER CONTROLS
-   IMPORTANT:
-   Force controls into the TOP-RIGHT area.
-   ========================================================= */
-
-.player-controls {
-    grid-column: 3;
-    grid-row: 1;
-
-    align-self: flex-start;
-
-    display: flex;
-
-    align-items: center;
-    justify-content: flex-end;
-
-    gap: 6px;
-
-    height: auto;
-
-    padding-right: 0;
-
-    white-space: nowrap;
-}
-
-
-.player-button {
-    flex: 0 0 auto;
-
-    width: 34px;
-    height: 34px;
-
-    padding: 0;
-
-    border: 0;
-
-    background: transparent;
-
-    cursor: pointer;
-
-    transition:
-        transform 0.18s ease,
-        filter 0.18s ease;
-}
-
-
-.player-button img {
-    display: block;
-
-    width: 100%;
-    height: 100%;
-
-    object-fit: contain;
-
-    image-rendering: pixelated;
-}
-
-
-.player-button:hover {
-    transform: translateY(-3px) scale(1.06);
-
-    filter: brightness(1.15);
-}
-
-
-.player-button:active {
-    transform: translate(1px, 1px);
-    filter: brightness(0.85);
-}
-
-
-.playlist-item:active {
-    transform: scale(calc(var(--dock-scale) * 0.97)) translateY(1px);
-}
-
-
-/* Main play button */
-
-.player-button.play-button,
-.play-button {
-    width: 48px;
-    height: 48px;
-
-    background: transparent;
-
-    border-radius: 50%;
-}
-
-
-/* =========================================================
-   PROGRESS BAR
-   Force it underneath song information + controls
-   ========================================================= */
-
-.progress-area {
-    grid-column: 2 / 4;
-    grid-row: 2;
-
-    align-self: center;
-
-    display: flex;
-
-    align-items: center;
-
-    width: 100%;
-    height: 30px;
-
-    gap: 9px;
-
-    padding-right: 3px;
-
-    font-family: 'Bitcount Grid Single', 'VT323', monospace;
-
-    font-size: 14px;
-
-    color: #ffe5bb;
-}
-
-.progress-area,
-.equalizer {
-    display: flex;
-}
-
-
-/* Time labels */
-
-#current-time-display,
-#duration-display {
-    flex: 0 0 auto;
-
-    min-width: 38px;
-
-    color: #ffe5bb;
-
-    white-space: nowrap;
-}
-
-
-/* =========================================================
-   CUSTOM PIXEL TIME BAR
-   ========================================================= */
-
-.progress-bar {
-    position: relative;
-
-    flex: 1;
-
-    width: auto;
-
-    height: 18px;
-
-    min-width: 0;
-
-    background:
-        url('assets/player/timebar.png')
-        center
-        center
-        / 100% 100%
-        no-repeat;
-
-    cursor: pointer;
-
-    overflow: hidden;
-}
-
-
-/*
-    IMPORTANT:
-    The actual progress fill should not cover
-    the decorative pixel timebar.
-*/
-
-.progress {
-    position: absolute;
-
-    left: 0;
-    top: 0;
-
-    width: 0%;
-    height: 100%;
-
-    background: transparent;
-
-    pointer-events: none;
-}
-
-
-/* =========================================================
-   EQUALIZER
-   ========================================================= */
-
-.equalizer {
-    position: absolute;
-
-    left: 50%;
-    bottom: 7px;
-
-    transform: translateX(-50%);
-
-    width: 78px;
-    height: 21px;
-
-    display: flex;
-
-    align-items: flex-end;
-    justify-content: center;
-
-    gap: 3px;
-
-    z-index: 8;
-
-    pointer-events: none;
-}
-
-
-.equalizer span {
-    width: 4px;
-
-    background: #f2a66a;
-
-    border-radius: 2px;
-
-    animation: equalizer-bars 0.8s ease-in-out infinite alternate;
-    animation-play-state: paused;
-}
-
-
-.equalizer.playing span {
-    animation-play-state: running;
-}
-
-
-.equalizer span:nth-child(1) { height: 7px; }
-.equalizer span:nth-child(2) { height: 13px; animation-delay: .08s; }
-.equalizer span:nth-child(3) { height: 9px; animation-delay: .14s; }
-.equalizer span:nth-child(4) { height: 18px; animation-delay: .21s; }
-.equalizer span:nth-child(5) { height: 11px; animation-delay: .27s; }
-.equalizer span:nth-child(6) { height: 20px; animation-delay: .34s; }
-.equalizer span:nth-child(7) { height: 12px; animation-delay: .18s; }
-.equalizer span:nth-child(8) { height: 17px; animation-delay: .3s; }
-.equalizer span:nth-child(9) { height: 8px; animation-delay: .12s; }
-.equalizer span:nth-child(10) { height: 14px; animation-delay: .25s; }
-
-
-@keyframes equalizer-bars {
-    from {
-        transform: scaleY(.65);
-    }
-
-    to {
-        transform: scaleY(1);
-    }
-}
-
-
-/* =========================================================
-   VINYL ANIMATION
-   ========================================================= */
-
-@keyframes vinyl-spin {
-    from {
-        transform: translateX(0) rotate(0deg);
-    }
-
-    to {
-        transform: translateX(0) rotate(360deg);
-    }
-}
-
-
-/* =========================================================
-   PLAYER RESPONSIVE FIX
-   ========================================================= */
-
-@media (max-width: 900px) {
-
-    .player-panel {
-        grid-template-columns: 115px minmax(0, 1fr) auto;
-
-        height: 145px;
-        min-height: 145px;
-
-        grid-template-rows: 70px 28px;
-    }
-
-    .album-art-container {
-        width: 105px;
-        height: 125px;
-
-        margin-left: -10px;
-    }
-
-    .player-button {
-        width: 32px;
-        height: 32px;
-    }
-
-    .play-button {
-        width: 46px;
-        height: 46px;
-    }
-
-    .song-title {
-        font-size: 14px;
-    }
-
-    .song-artist {
-        font-size: 13px;
-    }
-}
-
-
-@media (max-width: 700px) {
-
-    .player-panel {
-        left: 8px;
-        right: 8px;
-
-        grid-template-columns: 90px minmax(0, 1fr) auto;
-
-        column-gap: 5px;
-    }
-
-    .album-art-container {
-        width: 90px;
-        height: 110px;
-
-        margin-left: -3px;
-    }
-
-    .player-controls {
-        gap: 2px;
-    }
-
-    .player-button {
-        width: 28px;
-        height: 28px;
-    }
-
-    .play-button {
-        width: 40px;
-        height: 40px;
-    }
-}
-/* =========================================================
    CHOOSE FOLDER
    ========================================================= */
 
@@ -1784,30 +1353,6 @@ body {
     .queue-panel {
         width: 210px;
     }
-
-    .player-panel {
-        grid-template-columns:
-            105px
-            minmax(120px, 1fr)
-            auto;
-
-        column-gap: 8px;
-    }
-
-    .album-art-container {
-        width: 105px;
-        height: 115px;
-    }
-
-    .player-button {
-        width: 34px;
-        height: 34px;
-    }
-
-    .play-button {
-        width: 48px;
-        height: 48px;
-    }
 }
 
 
@@ -1850,51 +1395,6 @@ body {
 
         transform-origin:
             top right;
-    }
-
-    .player-panel {
-        left: 7px;
-        right: 7px;
-
-        height: 135px;
-
-        grid-template-columns:
-            85px
-            minmax(100px, 1fr)
-            auto;
-
-        grid-template-rows:
-            70px
-            25px;
-    }
-
-    .album-art-container {
-        width: 90px;
-        height: 100px;
-
-        margin-top: -22px;
-    }
-
-    .song-information {
-        padding: 7px 9px;
-    }
-
-    .song-title {
-        font-size: 12px;
-    }
-
-    .song-artist {
-        font-size: 12px;
-    }
-
-    .player-button {
-        width: 29px;
-        height: 29px;
-    }
-
-    .play-button {
-        width: 42px;
-        height: 42px;
     }
 }
 
