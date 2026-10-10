@@ -6,7 +6,7 @@
 
   <meta
     http-equiv="Content-Security-Policy"
-    content="default-src 'self' pixel-player: data:; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com data:; img-src 'self' data: https://usercontent.jamendo.com; media-src 'self' pixel-player: https:; connect-src 'self';"
+    content="default-src 'self' pixel-player: data:; script-src 'self' https://sdk.scdn.co; worker-src 'self' blob:; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com data:; img-src 'self' data: https://usercontent.jamendo.com https://i.scdn.co https://*.scdn.co https://*.spotifycdn.com; media-src 'self' pixel-player: https: blob:; connect-src 'self' https://accounts.spotify.com https://api.spotify.com https://*.spotify.com wss://*.spotify.com;"
   />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -20,8 +20,25 @@
   <div class="app">
     <aside class="sidebar">
       <img class="vine-garland" src="assets/decorations/vine-garland.png" alt="" aria-hidden="true">
-      <div class="logo"><img class="logo-vinyl" src="assets/vinyl/vinyl-record.png" alt=""><h1>PixelPlay</h1></div>
-      <nav class="playlist-nav" aria-label="Playlists">
+      <div class="logo"><img class="logo-vinyl" src="assets/vinyl/vinyl-record.png" alt=""><h1>PixelPlay</h1><button id="toggle-library-btn" class="panel-toggle library-toggle" type="button" aria-label="Collapse library" aria-controls="playlist-nav" aria-expanded="true" title="Collapse library">‹</button></div>
+      <nav class="primary-nav" aria-label="Main navigation">
+        <button class="primary-nav-item active" type="button" data-main-view="home"><span aria-hidden="true">⌂</span> Home</button>
+        <button class="primary-nav-item" type="button" data-main-view="search"><span aria-hidden="true">⌕</span> Search</button>
+        <button class="primary-nav-item" type="button" data-main-view="library"><span aria-hidden="true">▤</span> Your Library</button>
+      </nav>
+      <div class="library-heading"><strong>Your Library</strong><button id="add-playlist-btn" class="library-add-button" type="button" aria-label="Add playlist" title="Add playlist">+</button></div>
+      <div class="library-tabs" role="tablist" aria-label="Library categories">
+        <button class="library-tab active" type="button" role="tab" aria-selected="true" data-library-view="playlists">Playlists</button>
+        <button class="library-tab" type="button" role="tab" aria-selected="false" data-library-view="artists">Artists</button>
+        <button class="library-tab" type="button" role="tab" aria-selected="false" data-library-view="albums">Albums</button>
+      </div>
+      <div id="library-collection-view" class="library-collection-view" hidden></div>
+      <nav class="playlist-nav" id="playlist-nav" aria-label="Playlists">
+        <section class="spotify-library-group" id="spotify-library-group" aria-label="Spotify playlists" hidden>
+          <div class="sidebar-section-label">SPOTIFY PLAYLISTS</div>
+          <div class="spotify-playlist-list" id="spotify-playlist-list"></div>
+        </section>
+        <div class="sidebar-section-label local-playlist-heading" id="local-playlist-heading" hidden>LOCAL PLAYLISTS</div>
         <button id="choose-folder-btn" class="playlist-item add-playlist" type="button"><img src="assets/decorations/Add.png" alt=""><span>Add Playlist</span></button>
       </nav>
 
@@ -85,20 +102,9 @@
     <main class="room">
       <div class="room-scene-wrap" id="room-scene-wrap">
         <div class="room-scene" id="room-scene">
-          <img class="room-scene-bg" src="assets/cabin/background-clean.png" alt="Cozy cabin room">
-
-          <span class="cabin-sprite cabin-curtains" aria-hidden="true"></span>
-          <span class="cabin-sprite cabin-lights lights-bunk" aria-hidden="true"></span>
-          <span class="cabin-sprite cabin-lights lights-window" aria-hidden="true"></span>
-          <span class="cabin-sprite cabin-girl" aria-hidden="true"></span>
-          <span class="cabin-sprite cabin-pet" aria-hidden="true"></span>
-          <span class="cabin-sprite cabin-fireplace" aria-hidden="true"></span>
-          <span class="cabin-sprite cabin-beanbag" aria-hidden="true"></span>
-
-          <span class="cabin-sprite cabin-lantern lantern-pendant" aria-hidden="true"></span>
-          <span class="cabin-sprite cabin-lantern lantern-mantle" aria-hidden="true"></span>
-          <span class="cabin-sprite cabin-lantern lantern-window-left" aria-hidden="true"></span>
-          <span class="cabin-sprite cabin-lantern lantern-window-right" aria-hidden="true"></span>
+          <img class="room-scene-bg" src="assets/morning/room_morning.png" alt="Sunlit morning music room">
+          <img class="room-overlay room-bed" src="assets/morning/bed_morning.png" alt="" aria-hidden="true" draggable="false">
+          <img class="room-overlay room-girl" src="assets/morning/girl_sitting_morning.png" alt="" aria-hidden="true" draggable="false">
         </div>
       </div>
       <div class="ambient-glow"></div>
@@ -121,6 +127,7 @@
             />
             <kbd class="search-shortcut" aria-hidden="true">Ctrl K</kbd>
             <button id="clear-search-btn" class="clear-search" type="button" aria-label="Clear search" hidden>×</button>
+            <button id="spotify-connect-btn" class="spotify-connect-btn" type="button">Connect Spotify</button>
           </div>
           <div id="search-results" class="search-results" role="listbox" aria-label="Music search results" hidden></div>
         </section>
@@ -130,10 +137,24 @@
           <div class="weather" aria-label="Weather preview"><span class="weather-icon" aria-hidden="true">&#127780;</span><strong>28°C</strong><small>Mostly cloudy</small></div>
         </section>
 
-        <section class="current-playlist">
-          <h2><img src="assets/decorations/Teddy.png" alt=""> <span id="current-folder-name">Your music room</span></h2>
-          <p><span id="playlist-count">0/0</span> playing</p>
+        <section class="current-playlist" aria-label="Now playing">
+          <div class="now-playing-card-header"><h2>Now Playing</h2><span class="now-playing-spark" aria-hidden="true">✦</span></div>
+          <div class="now-playing-card-track">
+            <div class="now-playing-vinyl" aria-label="Spinning record">
+              <img class="now-playing-record" src="assets/vinyl/vinyl.png" alt="">
+              <img id="right-now-art" class="now-playing-label" src="assets/vinyl/no-song-placeholder.svg" alt="Current album cover">
+            </div>
+            <div class="now-playing-card-copy">
+              <strong id="right-now-title">No song selected</strong>
+              <span id="right-now-artist">Choose a song to begin</span>
+              <div class="now-playing-equalizer" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+            </div>
+          </div>
+          <div class="now-playing-card-context"><span id="current-folder-name">Your music room</span><span><b id="playlist-count">0/0</b> in queue</span></div>
+          <button id="toggle-queue-btn" class="panel-toggle queue-toggle" type="button" aria-label="Collapse queue" aria-controls="track-list" aria-expanded="true" title="Collapse queue">›</button>
         </section>
+
+        <button id="restore-queue-btn" class="panel-toggle restore-queue-toggle" type="button" aria-label="Show queue" aria-controls="track-list" aria-expanded="false" title="Show queue">♫ <span>Queue</span></button>
 
         <section class="queue-panel">
           <div class="queue-header"><h2>Up next</h2><span>QUEUE</span></div>
@@ -156,17 +177,18 @@
         <div class="song-information">
           <div id="now-playing-title" class="song-title">No song selected</div>
           <div id="now-playing-artist" class="song-artist">Choose a song to begin</div>
+          <div id="playback-status" class="playback-status" role="status" aria-live="polite" hidden></div>
         </div>
         <div class="player-controls">
-          <button id="random-btn" class="player-button" title="Random"><img src="assets/player/random.png" alt="Random"></button>
-          <button id="previous-btn" class="player-button" title="Previous"><img src="assets/player/previous.png" alt="Previous"></button>
+          <button id="random-btn" class="player-button" title="Shuffle (R)"><img src="assets/player/random.png" alt="Random"></button>
+          <button id="previous-btn" class="player-button" title="Previous track (←)"><img src="assets/player/previous.png" alt="Previous"></button>
           <button id="play-btn" class="player-button play-button" type="button" title="Play" aria-label="Play"><img src="assets/player/play.png" alt="" aria-hidden="true"></button>
-          <button id="next-btn" class="player-button" title="Next"><img src="assets/player/next.png" alt="Next"></button>
-          <button id="favourite-btn" class="player-button" title="Favourite"><img src="assets/player/favourite.png" alt="Favourite"></button>
+          <button id="next-btn" class="player-button" title="Next track (→)"><img src="assets/player/next.png" alt="Next"></button>
+          <button id="repeat-btn" class="player-button repeat-button" type="button" title="Repeat off"><span aria-hidden="true">↻</span><small class="repeat-one-mark" aria-hidden="true">1</small></button>
         </div>
         <div class="progress-area">
           <span id="current-time-display">00:00</span>
-          <div class="progress-bar" aria-label="Music progress">
+          <div class="progress-bar" role="slider" tabindex="0" aria-label="Music progress. Use left and right arrow keys to seek." aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" aria-valuetext="0:00 of 0:00">
             <div class="seek-tube"></div>
             <div id="progress" class="progress"></div>
           </div>
@@ -194,6 +216,26 @@
       </div>
     </form>
   </dialog>
+  <div id="spotify-connect-overlay" class="spotify-connect-overlay" hidden aria-hidden="true">
+    <section class="spotify-connect-dialog" role="dialog" aria-modal="true" aria-labelledby="spotify-connect-title" tabindex="-1">
+      <button id="spotify-connect-close" class="spotify-connect-close" type="button" aria-label="Close Spotify sign-in">×</button>
+      <div class="spotify-connect-art" aria-hidden="true">
+        <img src="assets/player/headphones.svg" alt="">
+      </div>
+      <p class="spotify-connect-kicker">SECURE ACCOUNT LINK</p>
+      <h2 id="spotify-connect-title">Connect your Spotify</h2>
+      <p id="spotify-connect-description" class="spotify-connect-description">A secure sign-in opens in your browser. Your password stays with Spotify.</p>
+      <div id="spotify-connect-status" class="spotify-connect-status" role="status" aria-live="polite">
+        <span class="spotify-connect-status-light" aria-hidden="true"></span>
+        <span id="spotify-connect-status-text">Ready when you are</span>
+      </div>
+      <div class="spotify-connect-actions">
+        <button id="spotify-connect-continue" class="spotify-connect-continue" type="button">Continue to Spotify</button>
+        <button id="spotify-connect-cancel" class="spotify-connect-cancel" type="button">Cancel</button>
+      </div>
+      <p class="spotify-connect-footnote">Spotify opens in your browser. Return here after you approve access.</p>
+    </section>
+  </div>
   <script src="renderer.js"></script>
 </body>
 
