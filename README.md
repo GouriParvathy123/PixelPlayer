@@ -1,161 +1,77 @@
-# 🎵 PixelPlayer
+# PixelPlayer
 
-> A cozy, whimsical pixel-art desktop music player built with Electron.
+A cozy pixel-art music player for Windows, built with Electron. PixelPlayer brings together your local music folders, Spotify library, and online music search in a warm, glass-inspired room UI.
 
-PixelPlayer combines a retro pixel-art aesthetic with a functional music player experience. The application features a cozy room-inspired interface, local music playback, playlists, favourites, queue management, animated playback controls, and online music search capabilities.
+## Features
 
----
+- Browse and play your Spotify playlists and Liked Songs.
+- Search Spotify for tracks, artists, and albums while connected.
+- Play, pause, skip tracks, seek through a song, and adjust volume.
+- Browse and play local audio files from a folder you choose.
+- Create local playlists and manage a play queue.
+- Search Jamendo when Spotify is not connected (requires an optional Jamendo client ID).
+- Enjoy the morning room artwork, vinyl player, and animated playback visualizer.
 
-## ✨ Features
+## Requirements
 
-### 🎮 Whimsical Pixel-Art Interface
+- Windows 10 or later
+- Node.js and npm
+- A Spotify account for Spotify library features
+- Spotify Premium for Spotify streaming through the Web Playback SDK
 
-PixelPlayer is designed as a cozy pixel-art music experience rather than a traditional music player.
+Spotify Development Mode also requires the account to be allowed in the app's **User Management** settings. See [SPOTIFY_SETUP.md](SPOTIFY_SETUP.md) for the full setup steps and playback troubleshooting.
 
-- 🌿 Cozy pixel-art environment
-- ✨ Whimsical UI elements
-- 🎮 Game-inspired interface
-- 🌸 Decorative pixel assets
-- 💜 Warm and nostalgic colour palette
+## Install and run
 
----
+Open a terminal in the project directory and run:
 
-### 🎵 Music Player
+```sh
+npm install
+npm start
+```
 
-- ▶️ Play music
-- ⏸️ Pause music
-- ⏭️ Skip tracks
-- ⏮️ Previous track controls
-- 🌊 Custom animated seekbar
-- ⏱️ Live elapsed time
-- ⌛ Remaining playback time
-- 💿 Animated vinyl player interface
+`npm start` keeps the terminal attached to PixelPlayer while the app is running. To stop it, focus the terminal and press **Ctrl+C**. Start it again with `npm start`.
 
-When no song is selected, the player remains empty instead of displaying hardcoded song information.
+## Configure Spotify
 
----
+1. Create a Spotify developer app and add the PixelPlayer account under **Settings > User Management**.
+2. Add the redirect URI `http://127.0.0.1:43827/callback` in the Spotify Developer Dashboard.
+3. Copy `.env.example` to `.env` and set your Spotify Client ID:
 
-### 📂 Local Music Library
+   ```env
+   SPOTIFY_CLIENT_ID=your_spotify_client_id
+   ```
 
-PixelPlayer supports loading music from your local device.
+4. Restart PixelPlayer and choose **Connect Spotify**. Sign in through the Spotify browser page and return to PixelPlayer.
 
-Users can:
+PixelPlayer uses Authorization Code with PKCE; it does not need a Spotify client secret. Keep `.env` private. It is excluded from Git by `.gitignore`. Spotify playback requires an available Spotify playback device. If PixelPlayer cannot find one, start playback in the Spotify desktop app or browser, then retry the controls in PixelPlayer.
 
-- Choose a music folder
-- Play local music files
-- Add songs to playlists
-- Manage their personal music collection
+For optional Jamendo search, set `JAMENDO_CLIENT_ID` in `.env`. Spotify search is used when Spotify is connected; Jamendo search is available when it is not.
 
----
+## Local music
 
-### 📋 Playlists
+Choose **Add Playlist** to create a local playlist, then select a music folder to load its tracks. PixelPlayer supports `.mp3`, `.flac`, `.wav`, `.ogg`, `.m4a`, and `.aac` files. The app reads audio only from the folder you select for the current session.
 
-The application includes:
-
-- 🧸 Playlist management
-- 🌷 Multiple playlists
-- ❤️ Favourites
-- ➕ Add Playlist option
-- 📋 Up Next queue
-
----
-
-### 🔍 Music Search
-
-PixelPlayer includes a centered glass-style search interface inspired by modern music streaming applications while preserving the whimsical PixelPlayer aesthetic.
-
-Users can search for:
-
-- Songs
-- Artists
-- Albums
-
----
-
-## 🌐 Online Music Integration
-
-PixelPlayer currently includes a **Jamendo music provider** for online music discovery.
-
-### Jamendo Integration
-
-The integration supports:
-
-- 🔎 Searching for tracks
-- 🎵 Discovering music
-- ▶️ Streaming supported tracks
-- 👩‍🎤 Artist information
-- 💿 Album information
-- 🖼️ Album artwork
-
-> Jamendo integration requires a valid Jamendo Client ID.
-
----
-
-## 🖼️ User Interface
-
-### 🎮 Sidebar
-
-The sidebar includes:
-
-- PixelPlay branding
-- Playlist navigation
-- Favourites
-- Add Playlist option
-- Pixel-art decorative elements
-- Decorative record player
-
----
-
-### 🎶 Now Playing
-
-The player displays:
-
-- Album artwork
-- Song title
-- Artist name
-- Playback controls
-- Animated seekbar
-- Elapsed playback time
-- Remaining playback time
-
----
-
-### 📋 Up Next Queue
-
-The Up Next section allows users to view songs waiting to play.
-
-The interface uses a glass-inspired design to match the overall cozy pixel aesthetic.
-
----
-
-## 🛠️ Tech Stack
-
-- **Electron**
-- **JavaScript**
-- **HTML**
-- **CSS**
-- **Node.js**
-- **Jamendo API**
-
----
-
-## 📁 Project Structure
+## Project layout
 
 ```text
 PixelPlayer/
-│
-├── assets/
-│   ├── decorations/
-│   │
-│   └── player/
-│
-├── js/
-│   └── jamendo-provider.js
-│
-├── index.html
-├── style.css
-├── renderer.js
-├── main.js
-├── preload.js
-├── package.json
-└── README.md
+  assets/                   Room, player, vinyl, and decorative art
+  assets/morning/           Morning room, bed, and character artwork
+  js/spotify-provider.js    Spotify OAuth, library, search, and playback API
+  js/jamendo-provider.js    Optional Jamendo search and streaming API
+  index.html                Application interface
+  style.css                 Layout, glass panels, and visual styling
+  renderer.js               UI behavior and playback controls
+  main.js                   Electron main process and native integrations
+  preload.js                Secure renderer-to-main process API
+  .env.example              Configuration template (contains placeholders)
+  SPOTIFY_SETUP.md          Detailed Spotify setup and troubleshooting
+```
+
+## Security notes
+
+- Never commit `.env`, access tokens, refresh tokens, or client secrets.
+- The Spotify integration uses PKCE and does not use a client secret.
+- Spotify refresh credentials are stored using the operating system's secure credential storage.
+- Local audio access is limited to the folder selected by the user during the current session.
