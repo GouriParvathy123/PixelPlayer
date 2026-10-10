@@ -20,15 +20,16 @@
   <div class="app">
     <aside class="sidebar">
       <img class="vine-garland" src="assets/decorations/vine-garland.png" alt="" aria-hidden="true">
-      <div class="logo"><h1>PixelPlay</h1></div>
+      <div class="logo"><img class="logo-vinyl" src="assets/vinyl/vinyl-record.png" alt=""><h1>PixelPlay</h1></div>
       <nav class="playlist-nav" aria-label="Playlists">
-        <button class="playlist-item active" data-playlist="playlist-1"><img src="assets/decorations/Teddy.png" alt=""><span>Playlist 1</span></button>
-        <button class="playlist-item" data-playlist="playlist-2"><img src="assets/decorations/Rosebush.png" alt=""><span>Playlist 2</span></button>
-        <button class="playlist-item" data-playlist="playlist-3"><img src="assets/decorations/Toadstool.png" alt=""><span>Playlist 3</span></button>
-        <button class="playlist-item" data-playlist="playlist-4"><img src="assets/decorations/Strawberry.png" alt=""><span>Playlist 4</span></button>
-        <button class="playlist-item" data-playlist="favourites"><img src="assets/player/favourite.png" alt=""><span>Favourites</span></button>
-        <button id="choose-folder-btn" class="playlist-item add-playlist"><img src="assets/decorations/Add.png" alt=""><span>Add Playlist</span></button>
+        <button id="choose-folder-btn" class="playlist-item add-playlist" type="button"><img src="assets/decorations/Add.png" alt=""><span>Add Playlist</span></button>
       </nav>
+
+      <section class="sidebar-now-playing" aria-label="Now playing">
+        <div class="sidebar-now-art"><img id="sidebar-now-art" src="assets/cabin/background-clean.png" alt=""><span class="mini-equalizer" aria-hidden="true"><i></i><i></i><i></i><i></i></span></div>
+        <div class="sidebar-now-copy"><small>Now Playing</small><strong id="sidebar-now-title">No song selected</strong></div>
+        <span class="now-playing-wave" aria-hidden="true">♫</span>
+      </section>
 
       <!-- Floating music notes above the record player -->
       <span class="note-float note-1" aria-hidden="true">♪</span>
@@ -73,6 +74,10 @@
 
         <!-- Red LED / indicator dot -->
         <span class="turntable-indicator" aria-hidden="true"></span>
+        <span class="vinyl-sparkle vinyl-sparkle-one" aria-hidden="true"></span>
+        <span class="vinyl-sparkle vinyl-sparkle-two" aria-hidden="true"></span>
+        <span class="vinyl-sparkle vinyl-sparkle-three" aria-hidden="true"></span>
+        <span class="vinyl-sparkle vinyl-sparkle-four" aria-hidden="true"></span>
 
       </div>
     </aside>
@@ -114,18 +119,19 @@
               aria-controls="search-results"
               aria-expanded="false"
             />
+            <kbd class="search-shortcut" aria-hidden="true">Ctrl K</kbd>
             <button id="clear-search-btn" class="clear-search" type="button" aria-label="Clear search" hidden>×</button>
           </div>
           <div id="search-results" class="search-results" role="listbox" aria-label="Music search results" hidden></div>
         </section>
 
         <section class="room-header">
-          <div class="clock"><span id="current-time">08:45</span><small>PM</small><em>Fri, Aug 15, 2026</em></div>
-          <div class="weather"><span class="weather-icon">☀</span><strong>28°C</strong><small>Mostly cloudy</small></div>
+          <div class="clock" aria-label="Local time and date"><span id="current-time">--:--</span><small id="current-period">--</small><em id="current-date">Loading date</em></div>
+          <div class="weather" aria-label="Weather preview"><span class="weather-icon" aria-hidden="true">&#127780;</span><strong>28°C</strong><small>Mostly cloudy</small></div>
         </section>
 
         <section class="current-playlist">
-          <h2><img src="assets/decorations/Teddy.png" alt=""> <span id="current-folder-name">Playlist 1</span></h2>
+          <h2><img src="assets/decorations/Teddy.png" alt=""> <span id="current-folder-name">Your music room</span></h2>
           <p><span id="playlist-count">0/0</span> playing</p>
         </section>
 
@@ -154,7 +160,7 @@
         <div class="player-controls">
           <button id="random-btn" class="player-button" title="Random"><img src="assets/player/random.png" alt="Random"></button>
           <button id="previous-btn" class="player-button" title="Previous"><img src="assets/player/previous.png" alt="Previous"></button>
-          <button id="play-btn" class="player-button play-button" title="Play"><img src="assets/player/play.png" alt="Play"></button>
+          <button id="play-btn" class="player-button play-button" type="button" title="Play" aria-label="Play"><img src="assets/player/play.png" alt="" aria-hidden="true"></button>
           <button id="next-btn" class="player-button" title="Next"><img src="assets/player/next.png" alt="Next"></button>
           <button id="favourite-btn" class="player-button" title="Favourite"><img src="assets/player/favourite.png" alt="Favourite"></button>
         </div>
@@ -166,10 +172,28 @@
           </div>
           <span id="duration-display">--:--</span>
         </div>
+        <div class="player-extras">
+          <div class="deck-visualizer" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+          <label class="volume-control"><span aria-hidden="true">♫</span><input id="volume-control" type="range" min="0" max="1" step="0.01" value="1" aria-label="Volume"></label>
+        </div>
         <audio id="audio" preload="metadata"></audio>
       </section>
     </main>
   </div>
+  <dialog id="playlist-dialog" class="playlist-dialog" aria-labelledby="playlist-dialog-title">
+    <form id="playlist-form">
+      <button class="dialog-close" type="button" aria-label="Close">×</button>
+      <span class="dialog-kicker">A new little corner</span>
+      <h2 id="playlist-dialog-title">Create a playlist</h2>
+      <p>Give this music nook a name. You can choose its folder next.</p>
+      <label for="playlist-name">Playlist name</label>
+      <input id="playlist-name" name="playlistName" type="text" maxlength="32" placeholder="e.g. Rainy day tunes" required autocomplete="off">
+      <div class="dialog-actions">
+        <button class="dialog-cancel" type="button">Cancel</button>
+        <button class="dialog-create" type="submit">Create playlist</button>
+      </div>
+    </form>
+  </dialog>
   <script src="renderer.js"></script>
 </body>
 

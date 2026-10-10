@@ -1,22 +1,34 @@
 const chooseFolderBtn = document.getElementById('choose-folder-btn');
 const trackList = document.getElementById('track-list');
 const audio = document.getElementById('audio');
+const volumeControl = document.getElementById('volume-control');
+volumeControl.addEventListener('input', () => { audio.volume = Number(volumeControl.value); });
 const nowPlayingTitle = document.getElementById('now-playing-title');
 const nowPlayingArtist = document.getElementById('now-playing-artist');
 const nowPlayingArt = document.getElementById('now-playing-art');
+const sidebarNowArt = document.getElementById('sidebar-now-art');
+const sidebarNowTitle = document.getElementById('sidebar-now-title');
 const albumArtContainer = document.querySelector('.album-art-container');
 const sidebarTurntable = document.getElementById('sidebar-turntable');
 const playButton = document.getElementById('play-btn');
+const playButtonImage = playButton.querySelector('img');
+function setPlayButtonArtwork(playing) {
+  playButtonImage.src = playing ? 'assets/player/pause.png' : 'assets/player/play.png';
+  const label = playing ? 'Pause' : 'Play';
+  playButton.setAttribute('aria-label', label);
+  playButton.setAttribute('title', label);
+}
 const progress = document.getElementById('progress');
 const progressBar = document.querySelector('.progress-bar');
 const currentTimeDisplay = document.getElementById('current-time-display');
 const durationDisplay = document.getElementById('duration-display');
-const playlistButtons = document.querySelectorAll('.playlist-item[data-playlist]');
-const allPlaylistButtons = document.querySelectorAll('.playlist-item');
 const playlistNav = document.querySelector('.playlist-nav');
 const playlistTitle = document.querySelector('.current-playlist h2');
 const playlistCount = document.getElementById('playlist-count');
 const currentFolderName = document.getElementById('current-folder-name');
+const playlistDialog = document.getElementById('playlist-dialog');
+const playlistForm = document.getElementById('playlist-form');
+const playlistNameInput = document.getElementById('playlist-name');
 
 /* =========================================================
    ONLINE SEARCH UI
@@ -34,7 +46,7 @@ const searchSection = document.querySelector('.music-search');
 
 let songs = [];
 let currentIndex = -1;
-let selectedPlaylist = 'playlist-1';
+let selectedPlaylist = null;
 let selectedFolderPath = '';
 
 /*
@@ -47,6 +59,54 @@ let playbackQueueSource = 'local';
 
 const playlistSongs = new Map();
 const folderNames = new Map();
+const playlistIcons = [
+  'assets/decorations/Teddy.png',
+  null,
+  null,
+  'assets/decorations/Strawberry.png',
+  'assets/player/favourite.png',
+  'assets/decorations/Rosebush.png',
+  'assets/decorations/Toadstool.png',
+  'assets/decorations/Sunflower.png'
+];
+let playlists = loadPlaylists();
+
+function loadPlaylists() {
+  try {
+    const stored = localStorage.getItem('pixel-player-playlists');
+    if (stored === null) return [
+      { id: 'playlist-1', name: 'Playlist 1' },
+      { id: 'playlist-2', name: 'Playlist 2' },
+      { id: 'playlist-3', name: 'Playlist 3' },
+      { id: 'playlist-4', name: 'Playlist 4' },
+      { id: 'favourites', name: 'Favourites' }
+    ];
+    const saved = JSON.parse(stored);
+    return Array.isArray(saved) ? saved.filter(item => item && typeof item.id === 'string' && typeof item.name === 'string') : [];
+  } catch {
+    return [];
+  }
+}
+
+function savePlaylists() {
+  localStorage.setItem('pixel-player-playlists', JSON.stringify(playlists));
+}
+
+function updateRoomClock() {
+  const now = new Date();
+  const timeParts = new Intl.DateTimeFormat(undefined, {
+    hour: '2-digit', minute: '2-digit', hour12: true
+  }).formatToParts(now);
+  document.getElementById('current-time').textContent =
+    `${timeParts.find(part => part.type === 'hour')?.value}:${timeParts.find(part => part.type === 'minute')?.value}`;
+  document.getElementById('current-period').textContent =
+    timeParts.find(part => part.type === 'dayPeriod')?.value || '';
+  document.getElementById('current-date').textContent =
+    new Intl.DateTimeFormat(undefined, { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' }).format(now);
+}
+
+updateRoomClock();
+setInterval(updateRoomClock, 30_000);
 
 let jamendoReady = false;
 let searchTimer = null;
@@ -133,10 +193,104 @@ async function chooseMusicFolder() {
 if (chooseFolderBtn) {
   chooseFolderBtn.addEventListener(
     'click',
-    chooseMusicFolder
+    openPlaylistDialog
   );
 }
 
+
+function openPlaylistDialog() {
+  playlistNameInput.value = '';
+  playlistDialog.showModal();
+  requestAnimationFrame(() => playlistNameInput.focus());
+}
+
+
+function renderPlaylistButtons() {
+  playlistNav.querySelectorAll('.playlist-item[data-playlist]').forEach(button => button.remove());
+  playlists.forEach((playlist, index) => {
+    const button = document.createElement('button');
+    button.type = 'button';
+    button.className = `playlist-item${playlist.id === selectedPlaylist ? ' active' : ''}`;
+    button.dataset.playlist = playlist.id;
+    const iconSource = playlistIcons[index % playlistIcons.length];
+    const icon = document.createElement(iconSource ? 'img' : 'span');
+    if (iconSource) {
+      icon.src = iconSource;
+      icon.alt = '';
+    } else {
+      icon.className = 'playlist-symbol';
+      icon.setAttribute('aria-hidden', 'true');
+      icon.textContent = index % playlistIcons.length === 1 ? '♫' : '★';
+    }
+    const label = document.createElement('span');
+    label.textContent = playlist.name;
+    const playMark = document.createElement('span');
+    playMark.className = 'playlist-play-mark';
+    playMark.setAttribute('aria-hidden', 'true');
+    button.append(icon, label, playMark);
+    playlistNav.insertBefore(button, chooseFolderBtn);
+  });
+}
+
+
+function selectPlaylist(button) {
+  selectedPlaylist = button.dataset.playlist;
+  songs = playlistSongs.get(selectedPlaylist) || [];
+  currentIndex = -1;
+  playbackQueue = songs;
+  playbackQueueSource = 'local';
+
+  playlistNav.querySelectorAll('.playlist-item[data-playlist]').forEach(item => {
+    item.classList.toggle('active', item === button);
+  });
+
+  const name = folderNames.get(selectedPlaylist) || button.querySelector('span')?.textContent || 'Music Folder';
+  const icon = button.querySelector('img, .playlist-symbol')?.cloneNode(true);
+  currentFolderName.textContent = name;
+  if (icon) playlistTitle.replaceChildren(icon, document.createTextNode(` ${name}`));
+  if (playlistCount) playlistCount.textContent = songs.length ? `0/${songs.length}` : '0/0';
+
+  trackList.classList.add('switching');
+  setTimeout(() => {
+    renderTrackList(songs);
+    trackList.classList.remove('switching');
+  }, 140);
+}
+
+
+renderPlaylistButtons();
+if (playlists.length) selectPlaylist(playlistNav.querySelector(`[data-playlist="${CSS.escape(playlists[0].id)}"]`));
+else {
+  currentFolderName.textContent = 'Your music room';
+  playlistTitle.replaceChildren(document.createTextNode('Your music room'));
+  const initialEmpty = trackList.querySelector('.empty');
+  if (initialEmpty) {
+    initialEmpty.querySelector('strong').textContent = 'Your music room is waiting';
+    initialEmpty.querySelector('span').textContent = 'Create a playlist to give your songs a home.';
+    initialEmpty.querySelector('.empty-action').textContent = 'Create a playlist';
+  }
+}
+
+playlistForm.addEventListener('submit', event => {
+  event.preventDefault();
+  const name = playlistNameInput.value.trim();
+  if (!name) {
+    playlistNameInput.focus();
+    return;
+  }
+  const playlist = { id: `playlist-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`, name };
+  playlists.push(playlist);
+  savePlaylists();
+  renderPlaylistButtons();
+  selectPlaylist(playlistNav.querySelector(`[data-playlist="${CSS.escape(playlist.id)}"]`));
+  playlistDialog.close();
+});
+
+playlistDialog.querySelector('.dialog-close').addEventListener('click', () => playlistDialog.close());
+playlistDialog.querySelector('.dialog-cancel').addEventListener('click', () => playlistDialog.close());
+playlistDialog.addEventListener('click', event => {
+  if (event.target === playlistDialog) playlistDialog.close();
+});
 
 const initialEmptyAction =
   document.querySelector('.empty-action');
@@ -144,105 +298,9 @@ const initialEmptyAction =
 if (initialEmptyAction) {
   initialEmptyAction.addEventListener(
     'click',
-    chooseMusicFolder
+    () => selectedPlaylist ? chooseMusicFolder() : openPlaylistDialog()
   );
 }
-
-
-/* =========================================================
-   PLAYLIST BUTTONS
-   ========================================================= */
-
-playlistButtons.forEach((button) => {
-
-  button.addEventListener('click', () => {
-
-    selectedPlaylist =
-      button.dataset.playlist;
-
-    songs =
-      playlistSongs.get(selectedPlaylist) || [];
-
-    currentIndex = -1;
-
-    playbackQueue = songs;
-    playbackQueueSource = 'local';
-
-
-    playlistButtons.forEach(
-      (playlistButton) => {
-
-        playlistButton.classList.toggle(
-          'active',
-          playlistButton === button
-        );
-
-      }
-    );
-
-
-    const folderName =
-      folderNames.get(selectedPlaylist) ||
-      button.querySelector('span')?.textContent ||
-      'Music Folder';
-
-    const icon =
-      button.querySelector('img');
-
-
-    if (icon) {
-
-      const playlistIcon =
-        icon.cloneNode(true);
-
-      if (currentFolderName) {
-        currentFolderName.textContent =
-          folderName;
-      }
-
-      if (playlistTitle) {
-
-        playlistTitle.replaceChildren(
-          playlistIcon,
-          document.createTextNode(
-            ` ${folderName}`
-          )
-        );
-
-      }
-
-    } else {
-
-      if (currentFolderName) {
-        currentFolderName.textContent =
-          folderName;
-      }
-
-    }
-
-
-    if (playlistCount) {
-
-      playlistCount.textContent =
-        songs.length
-          ? `0/${songs.length}`
-          : '0/0';
-
-    }
-
-    trackList.classList.add('switching');
-
-    setTimeout(() => {
-
-      renderTrackList(songs);
-
-      trackList.classList.remove('switching');
-
-    }, 140);
-
-  });
-
-});
 
 
 /* =========================================================
@@ -250,12 +308,16 @@ playlistButtons.forEach((button) => {
    ========================================================= */
 
 if (playlistNav) {
+  playlistNav.addEventListener('click', event => {
+    const button = event.target.closest('.playlist-item[data-playlist]');
+    if (button) selectPlaylist(button);
+  });
 
   playlistNav.addEventListener(
     'pointermove',
     (event) => {
 
-      allPlaylistButtons.forEach(
+      playlistNav.querySelectorAll('.playlist-item').forEach(
         (button) => {
 
           const bounds =
@@ -315,7 +377,7 @@ if (playlistNav) {
     'pointerleave',
     () => {
 
-      allPlaylistButtons.forEach(
+      playlistNav.querySelectorAll('.playlist-item').forEach(
         (button) => {
 
           button.style.removeProperty(
@@ -350,23 +412,23 @@ function renderTrackList(trackArray) {
       <li class="empty">
 
         <img
-          src="assets/decorations/Toadstool.png"
+          src="assets/player/headphones.svg"
           alt=""
         >
 
         <strong>
-          This playlist is empty
+          ${selectedFolderPath ? 'This playlist is empty' : 'Your music room is waiting'}
         </strong>
 
         <span>
-          No audio files were found in that folder.
+          ${selectedFolderPath ? 'No audio files were found in that folder.' : 'Choose a music folder to fill this playlist with songs.'}
         </span>
 
         <button
           class="empty-action"
           type="button"
         >
-          Choose another folder
+          ${selectedFolderPath ? 'Choose another folder' : 'Choose music folder'}
         </button>
 
       </li>
@@ -711,6 +773,9 @@ function playTrack(
     song.picture ||
     'assets/background/background.png';
 
+  if (sidebarNowArt) sidebarNowArt.src = nowPlayingArt.src;
+  if (sidebarNowTitle) sidebarNowTitle.textContent = song.title || 'Unknown Track';
+
 
   /*
    * Show Jamendo source.
@@ -975,10 +1040,10 @@ audio.addEventListener(
     if (sidebarTurntable) {
       sidebarTurntable.classList.add('is-playing');
     }
+    document.body.classList.add('is-playing');
 
 
-    playButton.innerHTML =
-      '<img src="assets/player/pause.png" alt="Pause">';
+    setPlayButtonArtwork(true);
 
 
     playButton.setAttribute(
@@ -1015,10 +1080,10 @@ audio.addEventListener(
     if (sidebarTurntable) {
       sidebarTurntable.classList.remove('is-playing');
     }
+    document.body.classList.remove('is-playing');
 
 
-    playButton.innerHTML =
-      '<img src="assets/player/play.png" alt="Play">';
+    setPlayButtonArtwork(false);
 
 
     playButton.setAttribute(
@@ -1057,8 +1122,7 @@ audio.addEventListener(
     }
 
 
-    playButton.innerHTML =
-      '<img src="assets/player/play.png" alt="Play">';
+    setPlayButtonArtwork(false);
 
 
     playButton.setAttribute(
@@ -1856,6 +1920,13 @@ document.addEventListener(
   'keydown',
   (event) => {
 
+    /* Familiar desktop shortcut for the prominent search bar. */
+    if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === 'k') {
+      event.preventDefault();
+      searchInput?.focus();
+      return;
+    }
+
     if (event.key === 'Escape') {
 
       closeSearchResults();
@@ -1926,7 +1997,7 @@ function spawnDustMotes() {
 
   if (!container) return;
 
-  for (let i = 0; i < 8; i++) {
+  for (let i = 0; i < 22; i++) {
 
     const mote =
       document.createElement('span');
@@ -1942,6 +2013,10 @@ function spawnDustMotes() {
 
     mote.style.animationDelay =
       `${Math.random() * 6}s`;
+
+    mote.style.setProperty('--mote-size', `${1 + Math.random() * 3}px`);
+    mote.style.setProperty('--mote-drift', `${-18 + Math.random() * 36}px`);
+    if (i % 5 === 0) mote.classList.add('dust-bubble');
 
     container.appendChild(mote);
 
@@ -2111,6 +2186,9 @@ function resetPlayerToIdle() {
   if (nowPlayingTitle) {
     nowPlayingTitle.textContent = 'No song selected';
   }
+
+  if (sidebarNowTitle) sidebarNowTitle.textContent = 'No song selected';
+  if (sidebarNowArt) sidebarNowArt.src = 'assets/cabin/background-clean.png';
 
   if (nowPlayingArtist) {
     nowPlayingArtist.textContent = 'Choose a song to begin';

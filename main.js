@@ -23,8 +23,13 @@ function isPathInsideAllowedRoot(candidatePath) {
 
 function createWindow() {
   const win = new BrowserWindow({
-    width: 960,
-    height: 640,
+    // The room scene is composed as a wide, desktop-first experience.
+    // Starting at 16:9 keeps the sidebar, scene, queue and player from
+    // collapsing into one another on first launch.
+    width: 1600,
+    height: 900,
+    minWidth: 1180,
+    minHeight: 700,
     backgroundColor: '#1a1a2e',
     webPreferences: {
       // Security baseline: renderer never gets raw Node/filesystem access.
