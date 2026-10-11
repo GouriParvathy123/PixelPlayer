@@ -29,6 +29,8 @@ const playButton = document.getElementById('play-btn');
 function setPlayButtonArtwork(playing) {
   playButton.classList.toggle('is-playing', playing);
   const label = playing ? 'Pause (Space)' : 'Play (Space)';
+  const icon = playButton.querySelector('img');
+  if (icon) icon.src = playing ? 'assets/player/pause.png' : 'assets/player/play.png';
   playButton.setAttribute('aria-label', label);
   playButton.setAttribute('title', label);
 }
@@ -39,6 +41,15 @@ const durationDisplay = document.getElementById('duration-display');
 const playlistNav = document.querySelector('.playlist-nav');
 const spotifyLibraryGroup = document.getElementById('spotify-library-group');
 const spotifyPlaylistList = document.getElementById('spotify-playlist-list');
+const spotifyPlaylistCarousel = document.getElementById('spotify-playlist-carousel');
+const spotifyCarouselViewport = document.getElementById('spotify-carousel-viewport');
+const spotifyCarouselList = document.getElementById('spotify-carousel-list');
+const spotifyCarouselEmpty = document.getElementById('spotify-carousel-empty');
+const spotifyCarouselConnect = document.getElementById('spotify-carousel-connect');
+const spotifyCarouselCollapse = document.getElementById('spotify-carousel-collapse');
+const spotifyCarouselRestore = document.getElementById('spotify-carousel-restore');
+const spotifyCarouselPrevious = document.getElementById('spotify-carousel-previous');
+const spotifyCarouselNext = document.getElementById('spotify-carousel-next');
 const localPlaylistHeading = document.getElementById('local-playlist-heading');
 const libraryCollectionView = document.getElementById('library-collection-view');
 const libraryTabButtons = [...document.querySelectorAll('.library-tab[data-library-view]')];
@@ -70,6 +81,12 @@ const spotifyConnectClose = document.getElementById('spotify-connect-close');
 const libraryToggleButton = document.getElementById('toggle-library-btn');
 const queueToggleButton = document.getElementById('toggle-queue-btn');
 const restoreQueueButton = document.getElementById('restore-queue-btn');
+const rightPanelTabButtons = [...document.querySelectorAll('[data-right-panel-tab]')];
+const rightPanelTabContents = [...document.querySelectorAll('[data-right-panel-content]')];
+const relatedTrackList = document.getElementById('related-track-list');
+const relatedPanelEmpty = document.getElementById('related-panel-empty');
+const lyricsPanelTitle = document.getElementById('lyrics-panel-title');
+const lyricsPanelCopy = document.getElementById('lyrics-panel-copy');
 const roomCharacter = document.querySelector('.room-girl');
 let keyboardPreviousVolume = Number(volumeControl.value) || 1;
 let spotifyPlaybackUnavailableMessage = 'Spotify is still connecting. Check your internet, then try again.';
@@ -126,6 +143,97 @@ try {
 libraryToggleButton?.addEventListener('click', () => setLibraryCollapsed(!document.body.classList.contains('library-collapsed')));
 queueToggleButton?.addEventListener('click', () => setQueueCollapsed(true));
 restoreQueueButton?.addEventListener('click', () => setQueueCollapsed(false));
+
+function setRightPanelTab(tabName, focusButton = false) {
+  rightPanelTabButtons.forEach(button => {
+    const selected = button.dataset.rightPanelTab === tabName;
+    button.classList.toggle('is-active', selected);
+    button.setAttribute('aria-selected', String(selected));
+    button.tabIndex = selected ? 0 : -1;
+    if (selected && focusButton) button.focus();
+  });
+  rightPanelTabContents.forEach(panel => {
+    panel.hidden = panel.dataset.rightPanelContent !== tabName;
+  });
+  if (tabName === 'related') renderRelatedTracks();
+  if (tabName === 'lyrics') updateLyricsPanel();
+}
+
+rightPanelTabButtons.forEach((button, index) => {
+  button.addEventListener('click', () => setRightPanelTab(button.dataset.rightPanelTab));
+  button.addEventListener('keydown', event => {
+    if (!['ArrowLeft', 'ArrowRight', 'Home', 'End'].includes(event.key)) return;
+    event.preventDefault();
+    const nextIndex = event.key === 'Home'
+      ? 0
+      : event.key === 'End'
+        ? rightPanelTabButtons.length - 1
+        : (index + (event.key === 'ArrowRight' ? 1 : -1) + rightPanelTabButtons.length) % rightPanelTabButtons.length;
+    setRightPanelTab(rightPanelTabButtons[nextIndex].dataset.rightPanelTab, true);
+  });
+});
+
+function updateLyricsPanel() {
+  const song = playbackQueue[currentIndex];
+  if (!lyricsPanelTitle || !lyricsPanelCopy) return;
+  lyricsPanelTitle.textContent = song?.title || 'Lyrics';
+  lyricsPanelCopy.textContent = song
+    ? 'Lyrics are not available through PixelPlayer for this track yet.'
+    : 'Choose a song to see lyric availability.';
+}
+
+function renderRelatedTracks() {
+  if (!relatedTrackList || !relatedPanelEmpty) return;
+  relatedTrackList.replaceChildren();
+  const current = playbackQueue[currentIndex];
+  const currentArtist = current?.artist?.trim().toLocaleLowerCase();
+  const matches = currentArtist
+    ? playbackQueue
+      .map((song, index) => ({ song, index }))
+      .filter(({ song, index }) => index !== currentIndex && song.artist?.trim().toLocaleLowerCase() === currentArtist)
+      .slice(0, 30)
+    : [];
+
+  relatedPanelEmpty.hidden = matches.length > 0;
+  relatedPanelEmpty.textContent = current
+    ? `No other tracks by ${current.artist || 'this artist'} in the current playlist.`
+    : 'Choose a song to find more tracks by the same artist in this playlist.';
+
+  matches.forEach(({ song, index }) => {
+    const row = document.createElement('li');
+    row.className = 'track';
+    row.tabIndex = 0;
+    row.setAttribute('role', 'button');
+    row.setAttribute('aria-label', `Play ${song.title || 'Unknown Track'} by ${song.artist || 'Unknown Artist'}`);
+
+    const artwork = document.createElement('img');
+    artwork.src = song.picture || 'assets/decorations/Teddy.png';
+    artwork.alt = '';
+    artwork.loading = 'lazy';
+    artwork.addEventListener('error', () => { artwork.src = 'assets/decorations/Teddy.png'; }, { once: true });
+
+    const details = document.createElement('span');
+    details.className = 'track-details';
+    const title = document.createElement('strong');
+    title.textContent = song.title || 'Unknown Track';
+    const artist = document.createElement('small');
+    artist.textContent = song.artist || 'Unknown Artist';
+    details.append(title, artist);
+
+    const duration = document.createElement('time');
+    duration.textContent = song.duration ? formatTime(song.duration) : '';
+    row.append(artwork, details, duration);
+    const playRelatedTrack = () => playTrack(song, index);
+    row.addEventListener('click', playRelatedTrack);
+    row.addEventListener('keydown', event => {
+      if (event.key === 'Enter' || event.key === ' ') {
+        event.preventDefault();
+        playRelatedTrack();
+      }
+    });
+    relatedTrackList.appendChild(row);
+  });
+}
 
 function reactToAction() {
   if (!roomCharacter) return;
@@ -505,7 +613,132 @@ function renderSpotifyPlaylistButtons() {
       (button.dataset.spotifyLibrary === 'liked' && currentSpotifyPlaylistId === 'liked')
     );
   });
+
+  renderSpotifyPlaylistCarousel();
 }
+
+
+function renderSpotifyPlaylistCarousel() {
+  if (!spotifyCarouselList || !spotifyCarouselEmpty) return;
+  spotifyCarouselList.replaceChildren();
+
+  const connected = spotifyConnected;
+  spotifyCarouselEmpty.hidden = connected && spotifyPlaylists.length > 0;
+  if (spotifyCarouselConnect) spotifyCarouselConnect.hidden = connected;
+  if (connected && !spotifyPlaylists.length) {
+    spotifyCarouselEmpty.querySelector('span').textContent = 'No Spotify playlists were found for this account.';
+  } else if (!connected) {
+    spotifyCarouselEmpty.querySelector('span').textContent = 'Connect Spotify to see your playlists here.';
+  }
+
+  (connected ? spotifyPlaylists : []).forEach((playlist, index) => {
+    const item = document.createElement('div');
+    item.className = 'spotify-carousel-item';
+    item.setAttribute('role', 'listitem');
+
+    const button = document.createElement('button');
+    button.type = 'button';
+    button.className = 'spotify-carousel-card';
+    button.dataset.spotifyPlaylist = playlist.id;
+    button.setAttribute('aria-label', `Open playlist ${playlist.name}, ${playlist.total} tracks`);
+    button.classList.toggle('active', playlist.id === currentSpotifyPlaylistId);
+
+    const artwork = document.createElement('img');
+    artwork.className = 'spotify-carousel-art';
+    artwork.src = playlist.picture || playlistIcons[index % playlistIcons.length] || 'assets/decorations/Teddy.png';
+    artwork.alt = '';
+    artwork.loading = 'lazy';
+    artwork.addEventListener('error', () => {
+      artwork.src = playlistIcons[index % playlistIcons.length] || 'assets/decorations/Teddy.png';
+      artwork.classList.add('is-fallback');
+    }, { once: true });
+
+    const copy = document.createElement('span');
+    copy.className = 'spotify-carousel-copy';
+    const name = document.createElement('strong');
+    name.textContent = playlist.name;
+    const count = document.createElement('small');
+    count.textContent = playlist.description?.trim() || `${playlist.total} ${playlist.total === 1 ? 'song' : 'songs'}`;
+    count.title = count.textContent;
+    copy.append(name, count);
+
+    const marker = document.createElement('span');
+    marker.className = 'spotify-carousel-playing';
+    marker.setAttribute('aria-hidden', 'true');
+    marker.textContent = '♫';
+    button.append(artwork, copy, marker);
+    item.appendChild(button);
+    spotifyCarouselList.appendChild(item);
+  });
+
+  updateSpotifyCarouselScrollButtons();
+}
+
+
+function updateSpotifyCarouselScrollButtons() {
+  if (!spotifyCarouselViewport) return;
+  const maxScroll = spotifyCarouselViewport.scrollHeight - spotifyCarouselViewport.clientHeight;
+  if (spotifyCarouselPrevious) spotifyCarouselPrevious.disabled = spotifyCarouselViewport.scrollTop <= 2;
+  if (spotifyCarouselNext) spotifyCarouselNext.disabled = maxScroll <= 2 || spotifyCarouselViewport.scrollTop >= maxScroll - 2;
+}
+
+
+function setSpotifyCarouselCollapsed(collapsed, persist = true) {
+  document.body.classList.toggle('spotify-carousel-collapsed', collapsed);
+  if (spotifyPlaylistCarousel) {
+    spotifyPlaylistCarousel.inert = collapsed;
+    spotifyPlaylistCarousel.setAttribute('aria-hidden', String(collapsed));
+  }
+  spotifyCarouselCollapse?.setAttribute('aria-expanded', String(!collapsed));
+  spotifyCarouselCollapse?.setAttribute('aria-label', collapsed ? 'Show playlist carousel' : 'Hide playlist carousel');
+  if (spotifyCarouselRestore) spotifyCarouselRestore.hidden = !collapsed;
+  if (persist) {
+    try {
+      localStorage.setItem('pixelplayer-playlist-carousel-collapsed', String(collapsed));
+    } catch (error) {
+      console.warn('Could not save playlist carousel visibility:', error.message);
+    }
+  }
+}
+
+spotifyCarouselList?.addEventListener('click', event => {
+  const button = event.target.closest('.spotify-carousel-card[data-spotify-playlist]');
+  if (button) selectSpotifyPlaylist(button);
+});
+
+spotifyCarouselConnect?.addEventListener('click', openSpotifyConnectOverlay);
+spotifyCarouselCollapse?.addEventListener('click', () => {
+  setSpotifyCarouselCollapsed(!document.body.classList.contains('spotify-carousel-collapsed'));
+});
+spotifyCarouselRestore?.addEventListener('click', () => setSpotifyCarouselCollapsed(false));
+spotifyCarouselPrevious?.addEventListener('click', () => {
+  spotifyCarouselViewport?.scrollBy({ top: -Math.max(120, spotifyCarouselViewport.clientHeight * .72), behavior: 'smooth' });
+});
+spotifyCarouselNext?.addEventListener('click', () => {
+  spotifyCarouselViewport?.scrollBy({ top: Math.max(120, spotifyCarouselViewport.clientHeight * .72), behavior: 'smooth' });
+});
+spotifyCarouselViewport?.addEventListener('scroll', updateSpotifyCarouselScrollButtons, { passive: true });
+spotifyCarouselViewport?.addEventListener('wheel', event => {
+  const delta = Math.abs(event.deltaX) > Math.abs(event.deltaY) ? event.deltaX : event.deltaY;
+  if (delta && spotifyCarouselViewport.scrollHeight > spotifyCarouselViewport.clientHeight) {
+    event.preventDefault();
+    spotifyCarouselViewport.scrollBy({ top: delta, behavior: 'auto' });
+  }
+}, { passive: false });
+window.addEventListener('resize', updateSpotifyCarouselScrollButtons);
+spotifyCarouselViewport?.addEventListener('keydown', event => {
+  if (event.key === 'ArrowUp' || event.key === 'ArrowDown') {
+    event.preventDefault();
+    spotifyCarouselViewport.scrollBy({ top: event.key === 'ArrowUp' ? -120 : 120, behavior: 'smooth' });
+  }
+});
+
+try {
+  setSpotifyCarouselCollapsed(localStorage.getItem('pixelplayer-playlist-carousel-collapsed') === 'true', false);
+} catch (error) {
+  console.warn('Could not read playlist carousel visibility:', error.message);
+}
+renderSpotifyPlaylistCarousel();
 
 
 function setLibraryView(view) {
@@ -956,6 +1189,8 @@ function renderTrackList(trackArray) {
     }
   );
 
+  renderRelatedTracks();
+
 }
 
 
@@ -1381,8 +1616,7 @@ async function selectSpotifyPlaylist(button) {
   if (!playlist) return;
 
   currentSpotifyPlaylistId = playlist.id;
-  playlistNav.querySelectorAll('.playlist-item').forEach(item => item.classList.remove('active'));
-  button.classList.add('active');
+  renderSpotifyPlaylistButtons();
   currentFolderName.textContent = playlist.name;
   playlistCount.textContent = `0/${playlist.total}`;
   selectedFolderPath = '';
@@ -1684,6 +1918,8 @@ function playTrack(
   if (rightNowArt) rightNowArt.src = nowPlayingArt.src;
   if (rightNowTitle) rightNowTitle.textContent = song.title || 'Unknown Track';
   if (rightNowArtist) rightNowArtist.textContent = song.artist || 'Unknown Artist';
+  updateLyricsPanel();
+  renderRelatedTracks();
   clearPlaybackStatus();
 
   if (sidebarNowArt) sidebarNowArt.src = nowPlayingArt.src;
@@ -3155,6 +3391,131 @@ if (window.ResizeObserver && roomSceneWrap) {
 }
 
 sizeCabinScene();
+
+
+/* =========================================================
+   ROOM TIME-OF-DAY THEMES
+   ========================================================= */
+
+const roomThemes = {
+  morning: {
+    label: 'Morning',
+    room: 'assets/morning/room_morning.png',
+    bed: 'assets/morning/bed_morning.png',
+    girl: 'assets/morning/girl_sitting_morning.png'
+  },
+  afternoon: {
+    label: 'Afternoon',
+    room: 'assets/themes/room/room_afternoon.png',
+    bed: 'assets/morning/bed_morning.png',
+    girl: 'assets/morning/girl_sitting_morning.png'
+  },
+  evening: {
+    label: 'Evening',
+    room: 'assets/themes/room/room_evening.png',
+    bed: 'assets/themes/furniture/bed_evening.png',
+    girl: 'assets/themes/girl/girl_sitting_evening.png'
+  },
+  night: {
+    label: 'Night',
+    room: 'assets/themes/room/room_night.png',
+    bed: 'assets/themes/furniture/bed_night.png',
+    girl: 'assets/themes/girl/girl_sitting_night.png'
+  }
+};
+
+const roomThemePicker = document.getElementById('room-theme-picker');
+const roomThemeImages = {
+  room: roomScene?.querySelector('.room-scene-bg'),
+  bed: roomScene?.querySelector('.room-bed'),
+  girl: roomScene?.querySelector('.room-girl')
+};
+
+let roomThemeRequest = 0;
+
+function preloadRoomTheme(theme) {
+  return Promise.all(Object.values(roomThemes[theme]).filter(value => typeof value === 'string' && value.includes('.png')).map(source => new Promise(resolve => {
+    const image = new Image();
+    image.onload = resolve;
+    image.onerror = resolve;
+    image.src = source;
+    if (image.complete) resolve();
+  })));
+}
+
+function dissolveRoomThemeLayers() {
+  if (!roomScene || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+  Object.values(roomThemeImages).forEach(image => {
+    if (!image || !image.complete || !image.naturalWidth) return;
+
+    const previous = image.cloneNode(false);
+    const computed = getComputedStyle(image);
+    previous.removeAttribute('id');
+    previous.setAttribute('aria-hidden', 'true');
+    previous.alt = '';
+    previous.classList.remove('theme-art-enter');
+    previous.classList.add('theme-transition-old');
+    ['position', 'left', 'right', 'top', 'bottom', 'width', 'height', 'zIndex', 'objectFit', 'transform', 'transformOrigin', 'translate', 'scale'].forEach(property => {
+      previous.style[property] = computed[property];
+    });
+    previous.style.animation = 'none';
+    roomScene.append(previous);
+
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => previous.classList.add('is-fading'));
+    });
+    const removePrevious = () => previous.remove();
+    previous.addEventListener('transitionend', removePrevious, { once: true });
+    window.setTimeout(removePrevious, 1100);
+  });
+}
+
+async function setRoomTheme(themeName, persist = true) {
+  const theme = roomThemes[themeName] ? themeName : 'morning';
+  const assets = roomThemes[theme];
+  const request = ++roomThemeRequest;
+
+  await preloadRoomTheme(theme);
+  if (request !== roomThemeRequest) return;
+
+  const hasChangedArt = Object.entries(roomThemeImages).some(([part, image]) => image && image.getAttribute('src') !== assets[part]);
+  if (hasChangedArt) dissolveRoomThemeLayers();
+
+  Object.entries(roomThemeImages).forEach(([part, image]) => {
+    if (!image || image.getAttribute('src') === assets[part]) return;
+    image.src = assets[part];
+  });
+
+  if (roomScene) roomScene.dataset.theme = theme;
+  if (roomThemeImages.room) roomThemeImages.room.alt = `${roomThemes[theme].label} music room`;
+  document.querySelectorAll('[data-room-theme]').forEach(button => {
+    const selected = button.dataset.roomTheme === theme;
+    button.classList.toggle('is-active', selected);
+    button.setAttribute('aria-pressed', String(selected));
+  });
+
+  if (persist) {
+    try {
+      localStorage.setItem('pixelplayer-room-theme', theme);
+    } catch (error) {
+      console.warn('Could not save the selected room theme:', error.message);
+    }
+  }
+}
+
+roomThemePicker?.addEventListener('click', event => {
+  const button = event.target.closest('[data-room-theme]');
+  if (button) setRoomTheme(button.dataset.roomTheme);
+});
+
+let savedRoomTheme = 'morning';
+try {
+  savedRoomTheme = localStorage.getItem('pixelplayer-room-theme') || 'morning';
+} catch (error) {
+  console.warn('Could not read the saved room theme:', error.message);
+}
+setRoomTheme(savedRoomTheme, false);
 
 
 /* =========================================================

@@ -5,12 +5,16 @@ A cozy pixel-art music player for Windows, built with Electron. PixelPlayer brin
 ## Features
 
 - Browse and play your Spotify playlists and Liked Songs.
+- Browse real Spotify playlists from a horizontal, keyboard-accessible carousel in the room.
+- Switch the Now Playing panel between the queue, lyric availability, and same-artist tracks in the selected playlist.
 - Search Spotify for tracks, artists, and albums while connected.
 - Play, pause, skip tracks, seek through a song, and adjust volume.
 - Browse and play local audio files from a folder you choose.
 - Create local playlists and manage a play queue.
 - Search Jamendo when Spotify is not connected (requires an optional Jamendo client ID).
-- Enjoy the morning room artwork, vinyl player, and animated playback visualizer.
+- Switch the room between morning, afternoon, evening, and night; PixelPlayer remembers your choice.
+- Use custom crisp pixel icons for navigation, theme selection, repeat, and transport controls; Whimsy greets you beside the logo.
+- Enjoy the cozy room artwork, vinyl player, and animated playback visualizer.
 
 ## Requirements
 
@@ -58,6 +62,9 @@ Choose **Add Playlist** to create a local playlist, then select a music folder t
 PixelPlayer/
   assets/                   Room, player, vinyl, and decorative art
   assets/morning/           Morning room, bed, and character artwork
+  assets/pet/               Whimsy, the PixelPlay bunny mascot
+  assets/themes/            Afternoon, evening, and night scene assets
+  assets/ui/                Crisp pixel navigation, theme, and repeat icons
   js/spotify-provider.js    Spotify OAuth, library, search, and playback API
   js/jamendo-provider.js    Optional Jamendo search and streaming API
   index.html                Application interface

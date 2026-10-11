@@ -193,6 +193,7 @@ class SpotifyProvider {
         id: item.id,
         uri: item.uri,
         name: item.name || 'Untitled playlist',
+        description: item.description || '',
         picture: item.images?.[0]?.url || null,
         total: Number(item.items?.total ?? item.tracks?.total) || 0,
       })));

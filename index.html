@@ -20,11 +20,11 @@
   <div class="app">
     <aside class="sidebar">
       <img class="vine-garland" src="assets/decorations/vine-garland.png" alt="" aria-hidden="true">
-      <div class="logo"><img class="logo-vinyl" src="assets/vinyl/vinyl-record.png" alt=""><h1>PixelPlay</h1><button id="toggle-library-btn" class="panel-toggle library-toggle" type="button" aria-label="Collapse library" aria-controls="playlist-nav" aria-expanded="true" title="Collapse library">‹</button></div>
+      <div class="logo"><img class="logo-mascot" src="assets/pet/whimsy.png" alt="Whimsy, the PixelPlay bunny mascot" draggable="false"><h1>PixelPlay</h1><button id="toggle-library-btn" class="panel-toggle library-toggle" type="button" aria-label="Collapse library" aria-controls="playlist-nav" aria-expanded="true" title="Collapse library">‹</button></div>
       <nav class="primary-nav" aria-label="Main navigation">
-        <button class="primary-nav-item active" type="button" data-main-view="home"><span aria-hidden="true">⌂</span> Home</button>
-        <button class="primary-nav-item" type="button" data-main-view="search"><span aria-hidden="true">⌕</span> Search</button>
-        <button class="primary-nav-item" type="button" data-main-view="library"><span aria-hidden="true">▤</span> Your Library</button>
+        <button class="primary-nav-item active" type="button" data-main-view="home"><span aria-hidden="true"><img src="assets/ui/home.svg" alt=""></span> Home</button>
+        <button class="primary-nav-item" type="button" data-main-view="search"><span aria-hidden="true"><img src="assets/ui/search.svg" alt=""></span> Search</button>
+        <button class="primary-nav-item" type="button" data-main-view="library"><span aria-hidden="true"><img src="assets/ui/library.svg" alt=""></span> Your Library</button>
       </nav>
       <div class="library-heading"><strong>Your Library</strong><button id="add-playlist-btn" class="library-add-button" type="button" aria-label="Add playlist" title="Add playlist">+</button></div>
       <div class="library-tabs" role="tablist" aria-label="Library categories">
@@ -114,7 +114,7 @@
         <!-- PixelPlayer search / online discovery -->
         <section class="music-search" aria-label="Search music">
           <div class="search-box">
-            <span class="search-icon" aria-hidden="true">⌕</span>
+            <span class="search-icon" aria-hidden="true"><img src="assets/ui/search.svg" alt=""></span>
             <input
               id="music-search-input"
               type="search"
@@ -137,6 +137,43 @@
           <div class="weather" aria-label="Weather preview"><span class="weather-icon" aria-hidden="true">&#127780;</span><strong>28°C</strong><small>Mostly cloudy</small></div>
         </section>
 
+        <nav class="room-theme-picker" id="room-theme-picker" aria-label="Room time of day">
+          <button class="room-theme-button is-active" type="button" data-room-theme="morning" aria-pressed="true">
+            <span aria-hidden="true"><img src="assets/ui/theme-morning.png" alt=""></span><span>Morning</span>
+          </button>
+          <button class="room-theme-button" type="button" data-room-theme="afternoon" aria-pressed="false">
+            <span aria-hidden="true"><img src="assets/ui/theme-afternoon.png" alt=""></span><span>Afternoon</span>
+          </button>
+          <button class="room-theme-button" type="button" data-room-theme="evening" aria-pressed="false">
+            <span aria-hidden="true"><img src="assets/ui/theme-evening.png" alt=""></span><span>Evening</span>
+          </button>
+          <button class="room-theme-button" type="button" data-room-theme="night" aria-pressed="false">
+            <span aria-hidden="true"><img src="assets/ui/theme-night.png" alt=""></span><span>Night</span>
+          </button>
+        </nav>
+
+        <section class="spotify-playlist-carousel" id="spotify-playlist-carousel" aria-label="Your Spotify playlists">
+          <div class="playlist-carousel-header">
+            <div>
+              <span class="playlist-carousel-kicker">YOUR LIBRARY</span>
+              <h2>Play something familiar</h2>
+            </div>
+            <div class="playlist-carousel-actions">
+              <button id="spotify-carousel-collapse" class="playlist-carousel-icon" type="button" aria-label="Hide playlist carousel" aria-expanded="true" title="Hide playlists">−</button>
+              <button id="spotify-carousel-previous" class="playlist-carousel-icon" type="button" aria-label="Scroll playlists up" title="Previous playlists">&#8593;</button>
+              <button id="spotify-carousel-next" class="playlist-carousel-icon" type="button" aria-label="Scroll playlists down" title="Next playlists">&#8595;</button>
+            </div>
+          </div>
+          <div class="spotify-carousel-viewport" id="spotify-carousel-viewport" tabindex="0" aria-label="Spotify playlist carousel">
+            <div class="spotify-carousel-list" id="spotify-carousel-list" role="list"></div>
+          </div>
+          <div class="spotify-carousel-empty" id="spotify-carousel-empty" hidden>
+            <span>Connect Spotify to see your playlists here.</span>
+            <button id="spotify-carousel-connect" type="button">Connect Spotify</button>
+          </div>
+        </section>
+        <button id="spotify-carousel-restore" class="spotify-carousel-restore" type="button" aria-label="Show Spotify playlists" title="Show playlists" hidden>&#9835;</button>
+
         <section class="current-playlist" aria-label="Now playing">
           <div class="now-playing-card-header"><h2>Now Playing</h2><span class="now-playing-spark" aria-hidden="true">✦</span></div>
           <div class="now-playing-card-track">
@@ -157,15 +194,31 @@
         <button id="restore-queue-btn" class="panel-toggle restore-queue-toggle" type="button" aria-label="Show queue" aria-controls="track-list" aria-expanded="false" title="Show queue">♫ <span>Queue</span></button>
 
         <section class="queue-panel">
-          <div class="queue-header"><h2>Up next</h2><span>QUEUE</span></div>
-          <ul id="track-list" class="track-list">
-            <li class="empty">
-              <img src="assets/decorations/Teddy.png" alt="">
-              <strong>Your music room is waiting</strong>
-              <span>Choose a music folder to fill this playlist with songs.</span>
-              <button class="empty-action" type="button">Choose music folder</button>
-            </li>
-          </ul>
+          <div class="right-panel-tabs" role="tablist" aria-label="Now Playing panel">
+            <button class="right-panel-tab is-active" id="right-tab-queue" type="button" role="tab" aria-selected="true" aria-controls="right-panel-queue" tabindex="0" data-right-panel-tab="queue">Queue</button>
+            <button class="right-panel-tab" id="right-tab-lyrics" type="button" role="tab" aria-selected="false" aria-controls="right-panel-lyrics" tabindex="-1" data-right-panel-tab="lyrics">Lyrics</button>
+            <button class="right-panel-tab" id="right-tab-related" type="button" role="tab" aria-selected="false" aria-controls="right-panel-related" tabindex="-1" data-right-panel-tab="related">Related</button>
+          </div>
+          <div class="right-panel-tab-panel" id="right-panel-queue" role="tabpanel" aria-labelledby="right-tab-queue" data-right-panel-content="queue">
+            <div class="queue-header"><h2>Up next</h2><span>QUEUE</span></div>
+            <ul id="track-list" class="track-list">
+              <li class="empty">
+                <img src="assets/decorations/Teddy.png" alt="">
+                <strong>Your music room is waiting</strong>
+                <span>Choose a music folder to fill this playlist with songs.</span>
+                <button class="empty-action" type="button">Choose music folder</button>
+              </li>
+            </ul>
+          </div>
+          <div class="right-panel-tab-panel right-panel-message" id="right-panel-lyrics" role="tabpanel" aria-labelledby="right-tab-lyrics" data-right-panel-content="lyrics" hidden>
+            <span class="right-panel-message-icon" aria-hidden="true">♫</span>
+            <strong id="lyrics-panel-title">Lyrics</strong>
+            <p id="lyrics-panel-copy">Choose a song to see lyric availability.</p>
+          </div>
+          <div class="right-panel-tab-panel" id="right-panel-related" role="tabpanel" aria-labelledby="right-tab-related" data-right-panel-content="related" hidden>
+            <ul id="related-track-list" class="track-list related-track-list"></ul>
+            <p id="related-panel-empty" class="right-panel-empty-copy">Choose a song to find more tracks by the same artist in this playlist.</p>
+          </div>
         </section>
       </div>
 
@@ -184,7 +237,7 @@
           <button id="previous-btn" class="player-button" title="Previous track (←)"><img src="assets/player/previous.png" alt="Previous"></button>
           <button id="play-btn" class="player-button play-button" type="button" title="Play" aria-label="Play"><img src="assets/player/play.png" alt="" aria-hidden="true"></button>
           <button id="next-btn" class="player-button" title="Next track (→)"><img src="assets/player/next.png" alt="Next"></button>
-          <button id="repeat-btn" class="player-button repeat-button" type="button" title="Repeat off"><span aria-hidden="true">↻</span><small class="repeat-one-mark" aria-hidden="true">1</small></button>
+          <button id="repeat-btn" class="player-button repeat-button" type="button" title="Repeat off" aria-label="Repeat off"><span class="repeat-icon" aria-hidden="true"><img src="assets/ui/repeat.svg" alt=""></span><small class="repeat-one-mark" aria-hidden="true">1</small></button>
         </div>
         <div class="progress-area">
           <span id="current-time-display">00:00</span>
